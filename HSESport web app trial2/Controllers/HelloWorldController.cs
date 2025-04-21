@@ -15,5 +15,6 @@ namespace HSESport_web_app_trial2.Controllers
             ViewData["NumTimes"] = numTimes;
             return View();
         }
+        //Проверка
     }
 }
