@@ -13,19 +13,13 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.StudentName)
+                @Html.DisplayNameFor(model => model.Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StudentSurname)
+                @Html.DisplayNameFor(model => model.Surname)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.StudentSecondName)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StudentEmail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StudentAttendanceOnSportActivities)
+                @Html.DisplayNameFor(model => model.Email)
             </th>
             <th></th>
         </tr>
@@ -34,24 +28,18 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.StudentName)
+                @Html.DisplayFor(modelItem => item.Name)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StudentSurname)
+                @Html.DisplayFor(modelItem => item.Surname)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StudentSecondName)
+                @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.StudentEmail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.StudentAttendanceOnSportActivities)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.StudentIdentificator">Редактировать</a> |
-                <a asp-action="Details" asp-route-id="@item.StudentIdentificator">Подробнее</a> |
-                <a asp-action="Delete" asp-route-id="@item.StudentIdentificator">Удалить</a>
+                <a asp-action="Edit" asp-route-id="@item.StudentId">Редактировать</a> |
+                <a asp-action="Details" asp-route-id="@item.StudentId">Подробнее</a> |
+                <a asp-action="Delete" asp-route-id="@item.StudentId">Удалить</a>
             </td>
         </tr>
 }

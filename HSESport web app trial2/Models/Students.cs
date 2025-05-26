@@ -10,7 +10,7 @@ namespace HSESport_web_app_trial2.Models
         /// <summary>
         /// номер зачетки студента
         /// </summary>
-        public int StudentIdentificator
+        public int StudentId
         {
             get; set;
         }
@@ -19,7 +19,7 @@ namespace HSESport_web_app_trial2.Models
         /// <summary>
         /// имя студента
         /// </summary>
-        public string? StudentName
+        public string? Name
         {
             get; set;
         }
@@ -28,36 +28,36 @@ namespace HSESport_web_app_trial2.Models
         /// <summary>
         /// фамилия студента
         /// </summary>
-        public string? StudentSurname
+        public string? Surname
         {
             get; set;
         }
 
-        [Display(Name = "Отчество студента")]
-        /// <summary>
-        /// отчество студента
-        /// </summary>
-        public string? StudentSecondName
-        {
-            get; set;
-        }
+        //[Display(Name = "Отчество студента")]
+        ///// <summary>
+        ///// отчество студента
+        ///// </summary>
+        //public string? StudentSecondName
+        //{
+        //    get; set;
+        //}
 
         [Display(Name = "Корпоративная почта студента")]
         /// <summary>
         /// корпоративная электронная почта студента
         /// </summary>
-        public string? StudentEmail
+        public string? Email
         {
             get; set;
         }
 
-        [Display(Name = "Число посещений студентом спортивных секций")]
-        /// <summary>
-        /// число посещений студентом спортивных секций
-        /// </summary>
-        public int StudentAttendanceOnSportActivities
-        {
-            get; set;
-        }
+        //[Display(Name = "Число посещений студентом спортивных секций")]
+        ///// <summary>
+        ///// число посещений студентом спортивных секций
+        ///// </summary>
+        //public int StudentAttendanceOnSportActivities
+        //{
+        //    get; set;
+        //}
     }
 }

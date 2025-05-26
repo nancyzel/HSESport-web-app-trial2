@@ -1,16 +1,20 @@
 using System.Diagnostics;
 using HSESport_web_app_trial2.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace HSESport_web_app_trial2.Controllers
 {
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly MyDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+
+        public HomeController(ILogger<HomeController> logger, MyDbContext dbContext)
         {
             _logger = logger;
+            _context = dbContext;
         }
 
         public IActionResult Index()
@@ -20,6 +24,7 @@ namespace HSESport_web_app_trial2.Controllers
 
         public IActionResult Privacy()
         {
+            var students = _context.Students.ToList();
             return View();
         }
 

@@ -11,9 +11,9 @@ namespace HSESport_web_app_trial2.Models
 {
     public class StudentsController : Controller
     {
-        private readonly HSESport_web_app_trial2Context _context;
+        private readonly MyDbContext _context;
 
-        public StudentsController(HSESport_web_app_trial2Context context)
+        public StudentsController(MyDbContext context)
         {
             _context = context;
         }
@@ -33,7 +33,7 @@ namespace HSESport_web_app_trial2.Models
             }
 
             var students = await _context.Students
-                .FirstOrDefaultAsync(m => m.StudentIdentificator == id);
+                .FirstOrDefaultAsync(m => m.StudentId == id);
             if (students == null)
             {
                 return NotFound();
@@ -87,7 +87,7 @@ namespace HSESport_web_app_trial2.Models
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("StudentIdentificator,StudentName,StudentSurname,studentSecondName,StudentEmail,StudentAttendanceOnSportActivities")] Students students)
         {
-            if (id != students.StudentIdentificator)
+            if (id != students.StudentId)
             {
                 return NotFound();
             }
@@ -101,7 +101,7 @@ namespace HSESport_web_app_trial2.Models
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StudentsExists(students.StudentIdentificator))
+                    if (!StudentsExists(students.StudentId))
                     {
                         return NotFound();
                     }
@@ -124,7 +124,7 @@ namespace HSESport_web_app_trial2.Models
             }
 
             var students = await _context.Students
-                .FirstOrDefaultAsync(m => m.StudentIdentificator == id);
+                .FirstOrDefaultAsync(m => m.StudentId == id);
             if (students == null)
             {
                 return NotFound();
@@ -150,7 +150,7 @@ namespace HSESport_web_app_trial2.Models
 
         private bool StudentsExists(int id)
         {
-            return _context.Students.Any(e => e.StudentIdentificator == id);
+            return _context.Students.Any(e => e.StudentId == id);
         }
     }
 }

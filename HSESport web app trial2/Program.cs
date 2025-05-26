@@ -1,9 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using HSESport_web_app_trial2.Data;
+using HSESport_web_app_trial2.Models;
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddDbContext<HSESport_web_app_trial2Context>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("HSESport_web_app_trial2Context") ?? throw new InvalidOperationException("Connection string 'HSESport_web_app_trial2Context' not found.")));
+builder.Services.AddDbContext<MyDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'HSESport_web_app_trial2Context' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
