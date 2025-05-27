@@ -41,24 +41,48 @@ namespace HSESport_web_app_trial2.Controllers
             return View();
         }
 
-        // POST: Students/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult Enter([Bind("UserEmail,UserPassword")] Authorization user)
+        //[ValidateAntiForgeryToken]
+        public IActionResult StudentEnter([Bind("UserEmail,UserPassword")] Authorization user)
         {
-            Console.WriteLine("дошел до enter");
             if (ModelState.IsValid)
             {
-                if (user.UserEmail == "aazelenina@hse.ru" && user.UserPassword == "123456")
-                    return RedirectToAction(nameof(Index));
+                if (user.UserEmail == "aazelenina@edu.hse.ru" && user.UserPassword == "123456")
+                    return RedirectToAction(nameof(StudentMainPage));
                 else
                 {
                     return RedirectToAction(nameof(EnterError));
                 }
             }
             return View(user);
+        }
+
+        [HttpPost]
+        //[ValidateAntiForgeryToken]
+        public IActionResult TeacherEnter([Bind("UserEmail,UserPassword")] Authorization user)
+        {
+            if (ModelState.IsValid)
+            {
+                if (user.UserEmail == "ymgordeev@hse.ru" && user.UserPassword == "12345678")
+                {
+                    return RedirectToAction(nameof(TeacherMainPage));
+                }
+                else
+                {
+                    return RedirectToAction(nameof(EnterError));
+                }
+            }
+            return View(user);
+        }
+
+        public IActionResult StudentMainPage()
+        {
+            return View();
+        }
+
+        public IActionResult TeacherMainPage()
+        {
+            return View();
         }
 
         public IActionResult EnterError()
