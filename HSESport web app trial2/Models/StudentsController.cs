@@ -53,7 +53,7 @@ namespace HSESport_web_app_trial2.Models
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StudentIdentificator,StudentName,StudentSurname,studentSecondName,StudentEmail,StudentAttendanceOnSportActivities")] Students students)
+        public async Task<IActionResult> Create([Bind("StudentId,Name,Surname,Email")] Students students)
         {
             if (ModelState.IsValid)
             {
