@@ -2,10 +2,10 @@
     ViewData["Title"] = "Главная";
 }
 
-<div class="text-center">
+<div class="text-center mt-5">
     <h1 class="display-4">Добро пожаловать!</h1>
 </div>
-<div class="enter-buttons">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StudentAuthorization"><u>Войти через профиль студента</u></a>
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="TeacherAuthorization"><u>Войти через профиль преподавателя</u></a>
+<div class="enter-buttons d-flex flex-column align-items-center mt-4">
+    <a class="btn btn-primary mb-3" asp-area="" asp-controller="Home" asp-action="StudentAuthorization">Войти через профиль студента</a>
+    <a class="btn btn-secondary" asp-area="" asp-controller="Home" asp-action="TeacherAuthorization">Войти через профиль преподавателя</a>
 </div>
