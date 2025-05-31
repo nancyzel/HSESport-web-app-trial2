@@ -51,7 +51,7 @@ namespace HSESport_web_app_trial2.Controllers
                     return RedirectToAction(nameof(StudentMainPage));
                 else
                 {
-                    return RedirectToAction(nameof(EnterError));
+                    return RedirectToAction(nameof(StudentEnterError));
                 }
             }
             return View(user);
@@ -69,7 +69,7 @@ namespace HSESport_web_app_trial2.Controllers
                 }
                 else
                 {
-                    return RedirectToAction(nameof(EnterError));
+                    return RedirectToAction(nameof(TeacherEnterError));
                 }
             }
             return View(user);
@@ -85,7 +85,12 @@ namespace HSESport_web_app_trial2.Controllers
             return View();
         }
 
-        public IActionResult EnterError()
+        public IActionResult StudentEnterError()
+        {
+            return View();
+        }
+
+        public IActionResult TeacherEnterError()
         {
             return View();
         }

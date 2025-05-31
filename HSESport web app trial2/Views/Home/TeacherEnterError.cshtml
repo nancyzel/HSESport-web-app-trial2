@@ -3,8 +3,8 @@
 @{
     ViewData["Title"] = "Вход в систему";
 }
-<h1>Вход в систему через профиль студента</h1>
-<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="TeacherAuthorisation"><u>Войти через профиль преподавателя</u></a>
+<h1>Вход в систему через профиль преподавателя</h1>
+<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="TeacherAuthorization"><u>Войти через профиль преподавателя</u></a>
 <div class="row">
     <div class="col-md-4">
         <form asp-controller="Home" asp-action="TeacherEnter">
@@ -20,7 +20,7 @@
                 <span asp-validation-for="UserPassword" class="text-danger"></span>
             </div>
             <div>
-                <p><font color="red">Введены неверный адрес электронной почты или пароль. Попробуйте снова</font></p>
+                <p><font color="red">Преподаватель с данным адресом почты и/или паролем не найден. Попробуйте снова</font></p>
             </div>
             <div class="form-group">
                 <input type="submit" value="Войти" class="btn btn-primary" />
