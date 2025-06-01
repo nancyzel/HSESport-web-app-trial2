@@ -41,14 +41,35 @@ namespace HSESport_web_app_trial2.Controllers
             return View();
         }
 
+        public async Task<bool> SearchStudentByEmailAndPassword(string userEmail, string userPassword)
+        {
+            if (_context.Students == null)
+            {
+                return false;
+            }
+            else
+            {
+                var students = await _context.Students.FirstOrDefaultAsync(m => (m.Email == userEmail));
+                if (students == null)
+                {
+                    Console.WriteLine(userPassword);
+
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
         [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public IActionResult StudentEnter([Bind("UserEmail,UserPassword")] Authorization user)
+        public async Task<IActionResult> StudentEnter([Bind("UserEmail,UserPassword")] Authorization user)
         {
             if (ModelState.IsValid)
             {
-                StudentsController newCont = new StudentsController(_context);
-                if (newCont.Search(user.UserEmail))
+                bool doesStudentWithEmailExist = await SearchStudentByEmailAndPassword(user.UserEmail, user.UserPassword);
+                if (doesStudentWithEmailExist)
                     return RedirectToAction(nameof(StudentMainPage), "Home", user);
                 else
                 {

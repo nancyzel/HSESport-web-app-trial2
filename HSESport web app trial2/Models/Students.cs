@@ -57,5 +57,14 @@ namespace HSESport_web_app_trial2.Models
         {
             get; set;
         }
+
+        [Display(Name = "Пароль от личного кабинета в приложении HSESport")]
+        /// <summary>
+        /// пароль от личного кабинета в приложении HSESport
+        /// </summary>
+        public string? Password
+        {
+            get; set;
+        }
     }
 }

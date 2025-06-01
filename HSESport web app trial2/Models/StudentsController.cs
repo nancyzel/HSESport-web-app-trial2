@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using HSESport_web_app_trial2.Data;
 
 namespace HSESport_web_app_trial2.Models
 {
@@ -16,26 +15,6 @@ namespace HSESport_web_app_trial2.Models
         public StudentsController(MyDbContext context)
         {
             _context = context;
-        }
-
-        public bool Search(string userEmail)
-        {
-            if (_context.Students == null)
-            {
-                return false;
-            }
-            else
-            {
-                var students = _context.Students.FirstOrDefaultAsync(m => m.Email == userEmail);
-                if (students == null)
-                {
-                    return false;
-                }
-                else
-                {
-                    return true;
-                }
-            }
         }
 
         // GET: Students
