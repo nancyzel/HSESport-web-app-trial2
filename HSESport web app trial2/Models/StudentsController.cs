@@ -18,6 +18,26 @@ namespace HSESport_web_app_trial2.Models
             _context = context;
         }
 
+        public bool Search(string userEmail)
+        {
+            if (_context.Students == null)
+            {
+                return false;
+            }
+            else
+            {
+                var students = _context.Students.FirstOrDefaultAsync(m => m.Email == userEmail);
+                if (students == null)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+        }
+
         // GET: Students
         public async Task<IActionResult> Index()
         {

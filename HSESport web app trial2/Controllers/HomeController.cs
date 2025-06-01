@@ -47,8 +47,9 @@ namespace HSESport_web_app_trial2.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (user.UserEmail == "aazelenina@edu.hse.ru" && user.UserPassword == "123456")
-                    return RedirectToAction(nameof(StudentMainPage));
+                StudentsController newCont = new StudentsController(_context);
+                if (newCont.Search(user.UserEmail))
+                    return RedirectToAction(nameof(StudentMainPage), "Home", user);
                 else
                 {
                     return RedirectToAction(nameof(StudentEnterError));
@@ -75,9 +76,10 @@ namespace HSESport_web_app_trial2.Controllers
             return View(user);
         }
 
-        public IActionResult StudentMainPage()
+        public IActionResult StudentMainPage(Authorization student)
         {
-            return View();
+            Console.WriteLine(student.UserEmail);
+            return View(student);
         }
 
         public IActionResult TeacherMainPage()

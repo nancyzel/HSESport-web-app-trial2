@@ -4,6 +4,7 @@ namespace HSESport_web_app_trial2.Models
 {
     public class Authorization
     {
+
         [Key]
         [Display(Name = "Адрес электронной почты")]
         /// <summary>

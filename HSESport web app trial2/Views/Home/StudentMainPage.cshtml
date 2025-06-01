@@ -1,4 +1,6 @@
-﻿@{
+﻿@model HSESport_web_app_trial2.Models.Authorization
+
+@{
     ViewData["Title"] = "Студент";
     Layout = "Layout_Student";
 }
@@ -7,5 +9,5 @@
     <h1 class="display-4">Добро пожаловать, студент!</h1>
 </div>
 <div class="enter-buttons">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StudentAuthorization"><u>Просмотреть информацию об имеющихся посещениях</u></a>
+    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StudentAuthorization"><u>@Model.UserEmail</u></a>
 </div>
