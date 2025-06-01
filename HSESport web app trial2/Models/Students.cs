@@ -31,14 +31,14 @@ namespace HSESport_web_app_trial2.Models
             get; set;
         }
 
-        //[Display(Name = "Отчество студента")]
-        ///// <summary>
-        ///// отчество студента
-        ///// </summary>
-        //public string? StudentSecondName
-        //{
-        //    get; set;
-        //}
+        [Display(Name = "Отчество студента")]
+        /// <summary>
+        /// отчество студента
+        /// </summary>
+        public string? SecondName
+        {
+            get; set;
+        }
 
         [Display(Name = "Корпоративная почта студента")]
         /// <summary>
@@ -49,13 +49,13 @@ namespace HSESport_web_app_trial2.Models
             get; set;
         }
 
-        //[Display(Name = "Число посещений студентом спортивных секций")]
-        ///// <summary>
-        ///// число посещений студентом спортивных секций
-        ///// </summary>
-        //public int StudentAttendanceOnSportActivities
-        //{
-        //    get; set;
-        //}
+        [Display(Name = "Число посещений студентом спортивных секций")]
+        /// <summary>
+        /// число посещений студентом спортивных секций
+        /// </summary>
+        public int AttendanceRate
+        {
+            get; set;
+        }
     }
 }
