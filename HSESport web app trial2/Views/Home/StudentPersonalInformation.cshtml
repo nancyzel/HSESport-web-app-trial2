@@ -1,0 +1,26 @@
+﻿@model HSESport_web_app_trial2.Models.Students
+
+@{
+    ViewData["Title"] = "Информация о студенте";
+    Layout = "Layout_Student";
+
+}
+<h1>@ViewData["Title"]</h1>
+<h4>Имя студента</h4>
+<p>@Model.Name</p>
+
+<hr />
+<h4>Фамилия студента</h4>
+<p>@Model.Surname</p>
+
+<hr />
+<h4>Отчество студента</h4>
+<p>@Model.SecondName</p>
+
+<hr />
+<h4>Адрес корпоративной почты студента</h4>
+<p>@Model.Email</p>
+
+<hr />
+<h4>Число посещений студента</h4>
+<p>@Model.AttendanceRate</p>

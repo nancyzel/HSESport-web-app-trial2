@@ -1,4 +1,6 @@
-﻿<!DOCTYPE html>
+﻿@model HSESport_web_app_trial2.Models.Authorization
+
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="utf-8" />
@@ -23,7 +25,14 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="AccountInformation">Личный кабинет</a>
+                            <form asp-controller="Home" asp-action="StudentPersonalInformation">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <input type="hidden" asp-for="UserEmail" value="@Model.UserEmail">
+                                <input type="hidden" asp-for="UserPassword" value="@Model.UserPassword">
+                                <div class="form-group">
+                                    <input type="submit" value="Информация о студенте" />
+                                </div>
+                            </form>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule">Расписание секций</a>

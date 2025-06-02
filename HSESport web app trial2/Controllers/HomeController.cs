@@ -49,11 +49,9 @@ namespace HSESport_web_app_trial2.Controllers
             }
             else
             {
-                var students = await _context.Students.FirstOrDefaultAsync(m => (m.Email == userEmail));
+                var students = await _context.Students.FirstOrDefaultAsync(m => (m.Email == userEmail && m.Password == userPassword));
                 if (students == null)
                 {
-                    Console.WriteLine(userPassword);
-
                     return false;
                 }
                 else
@@ -80,6 +78,17 @@ namespace HSESport_web_app_trial2.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> StudentPersonalAccountEnter([Bind("UserEmail,UserPassword")] Authorization user)
+        {
+            if (ModelState.IsValid)
+            {
+                var student = await _context.Students.FirstOrDefaultAsync(m => m.Email == user.UserEmail);
+                return RedirectToAction(nameof(StudentMainPage), "Home", student);
+            }
+            return View(user);
+        }
+
+        [HttpPost]
         //[ValidateAntiForgeryToken]
         public IActionResult TeacherEnter([Bind("UserEmail,UserPassword")] Authorization user)
         {
@@ -87,7 +96,7 @@ namespace HSESport_web_app_trial2.Controllers
             {
                 if (user.UserEmail == "ymgordeev@hse.ru" && user.UserPassword == "12345678")
                 {
-                    return RedirectToAction(nameof(TeacherMainPage));
+                    return RedirectToAction(nameof(TeacherMainPage), "Home", user);
                 }
                 else
                 {
@@ -97,15 +106,32 @@ namespace HSESport_web_app_trial2.Controllers
             return View(user);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> StudentPersonalInformation([Bind("UserEmail,UserPassword")] Authorization user)
+        {
+            if (ModelState.IsValid)
+            {
+                var student = await _context.Students.FirstOrDefaultAsync(m => m.Email == user.UserEmail);
+                Console.WriteLine("ok");
+                return View(student);
+            }
+            Console.WriteLine("not ok");
+            return View(user);
+        }
+
+        public IActionResult TeacherPersonalInformation()
+        {
+            return View();
+        }
+
         public IActionResult StudentMainPage(Authorization student)
         {
-            Console.WriteLine(student.UserEmail);
             return View(student);
         }
 
-        public IActionResult TeacherMainPage()
+        public IActionResult TeacherMainPage(Authorization teacher)
         {
-            return View();
+            return View(teacher);
         }
 
         public IActionResult StudentEnterError()

@@ -8,6 +8,12 @@
 <div class="text-center">
     <h1 class="display-4">Добро пожаловать, студент!</h1>
 </div>
-<div class="enter-buttons">
-    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StudentAuthorization"><u>@Model.UserEmail</u></a>
-</div>
+@* 
+<form asp-controller="Home" asp-action="StudentPersonalInformation">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="UserEmail" value="@Model.UserEmail">
+    <input type="hidden" asp-for="UserPassword" value="@Model.UserPassword">
+    <div class="form-group">
+        <input type="submit" value="Просмотреть информацию о своих посещениях" />
+    </div>
+</form> *@
