@@ -2,6 +2,7 @@ using System.Diagnostics;
 using HSESport_web_app_trial2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HSESport_web_app_trial2.Controllers
 {
@@ -31,12 +32,60 @@ namespace HSESport_web_app_trial2.Controllers
             return View();
         }
 
-        public IActionResult StudentAuthorization()
+        public IActionResult TeacherAuthorization()
         {
             return View();
         }
 
-        public IActionResult TeacherAuthorization()
+        [HttpPost]
+        public IActionResult TeacherEnter([Bind("Email,Password")] BaseUserModel user)
+        {
+            if (ModelState.IsValid)
+            {
+                if (user.Email == "ymgordeev@hse.ru" && user.Password == "12345678")
+                {
+                    return RedirectToAction(nameof(TeacherMainPage), "Home", user);
+                }
+                else
+                {
+                    return RedirectToAction(nameof(TeacherEnterError));
+                }
+            }
+            return View(user);
+        }
+
+        public IActionResult TeacherMainPage(BaseUserModel teacher)
+        {
+            return View(teacher);
+        }
+        public IActionResult TeacherEnterError()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult TeacherPersonalInformation([Bind("Email,Password")] BaseUserModel user)
+        {
+            if (ModelState.IsValid)
+            {
+                if (user.Email == "ymgordeev@hse.ru" && user.Password == "12345678")
+                {
+                    user.Name = "Юрий";
+                    user.Surname = "Гордеев";
+                    user.SecondName = "Матвеевич";
+                }
+                return RedirectToAction(nameof(TeacherPersonalAccount), "Home", user);
+            }
+            return View(user);
+        }
+
+        public IActionResult TeacherPersonalAccount(BaseUserModel teacher)
+        {
+            ViewBag.UserRole = "Teacher";
+            return View(teacher);
+        }
+
+        public IActionResult StudentAuthorization()
         {
             return View();
         }
@@ -62,11 +111,11 @@ namespace HSESport_web_app_trial2.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> StudentEnter([Bind("UserEmail,UserPassword")] Authorization user)
+        public async Task<IActionResult> StudentEnter([Bind("Email,Password")] Students user)
         {
             if (ModelState.IsValid)
             {
-                bool doesStudentWithEmailExist = await SearchStudentByEmailAndPassword(user.UserEmail, user.UserPassword);
+                bool doesStudentWithEmailExist = await SearchStudentByEmailAndPassword(user.Email, user.Password);
                 if (doesStudentWithEmailExist)
                     return RedirectToAction(nameof(StudentMainPage), "Home", user);
                 else
@@ -78,68 +127,27 @@ namespace HSESport_web_app_trial2.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> StudentPersonalAccountEnter([Bind("UserEmail,UserPassword")] Authorization user)
+        public async Task<IActionResult> StudentPersonalInformation([Bind("Email,Password")] Students user)
         {
             if (ModelState.IsValid)
             {
-                var student = await _context.Students.FirstOrDefaultAsync(m => m.Email == user.UserEmail);
-                return RedirectToAction(nameof(StudentMainPage), "Home", student);
+                var student = await _context.Students.FirstOrDefaultAsync(m => m.Email == user.Email);
+                return RedirectToAction(nameof(StudentPersonalAccount), "Home", student);
             }
             return View(user);
         }
 
-        [HttpPost]
-        //[ValidateAntiForgeryToken]
-        public IActionResult TeacherEnter([Bind("UserEmail,UserPassword")] Authorization user)
-        {
-            if (ModelState.IsValid)
-            {
-                if (user.UserEmail == "ymgordeev@hse.ru" && user.UserPassword == "12345678")
-                {
-                    return RedirectToAction(nameof(TeacherMainPage), "Home", user);
-                }
-                else
-                {
-                    return RedirectToAction(nameof(TeacherEnterError));
-                }
-            }
-            return View(user);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> StudentPersonalInformation([Bind("UserEmail,UserPassword")] Authorization user)
-        {
-            if (ModelState.IsValid)
-            {
-                var student = await _context.Students.FirstOrDefaultAsync(m => m.Email == user.UserEmail);
-                Console.WriteLine("ok");
-                return View(student);
-            }
-            Console.WriteLine("not ok");
-            return View(user);
-        }
-
-        public IActionResult TeacherPersonalInformation()
-        {
-            return View();
-        }
-
-        public IActionResult StudentMainPage(Authorization student)
+        public IActionResult StudentMainPage(Students student)
         {
             return View(student);
         }
 
-        public IActionResult TeacherMainPage(Authorization teacher)
+        public IActionResult StudentPersonalAccount(Students student)
         {
-            return View(teacher);
+            return View(student);
         }
 
         public IActionResult StudentEnterError()
-        {
-            return View();
-        }
-
-        public IActionResult TeacherEnterError()
         {
             return View();
         }

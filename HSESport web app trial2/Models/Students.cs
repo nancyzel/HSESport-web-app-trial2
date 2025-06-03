@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 namespace HSESport_web_app_trial2.Models
 {
-    public class Students
+    public class Students: BaseUserModel
     {
         [Key]
         [Display(Name = "Номер зачетной книжки студента")]
@@ -13,56 +13,11 @@ namespace HSESport_web_app_trial2.Models
             get; set;
         }
 
-        [Display(Name = "Имя студента")]
-        /// <summary>
-        /// имя студента
-        /// </summary>
-        public string? Name
-        {
-            get; set;
-        }
-
-        [Display(Name = "Фамилия студента")]
-        /// <summary>
-        /// фамилия студента
-        /// </summary>
-        public string? Surname
-        {
-            get; set;
-        }
-
-        [Display(Name = "Отчество студента")]
-        /// <summary>
-        /// отчество студента
-        /// </summary>
-        public string? SecondName
-        {
-            get; set;
-        }
-
-        [Display(Name = "Корпоративная почта студента")]
-        /// <summary>
-        /// корпоративная электронная почта студента
-        /// </summary>
-        public string? Email
-        {
-            get; set;
-        }
-
         [Display(Name = "Число посещений студентом спортивных секций")]
         /// <summary>
         /// число посещений студентом спортивных секций
         /// </summary>
         public int AttendanceRate
-        {
-            get; set;
-        }
-
-        [Display(Name = "Пароль от личного кабинета в приложении HSESport")]
-        /// <summary>
-        /// пароль от личного кабинета в приложении HSESport
-        /// </summary>
-        public string? Password
         {
             get; set;
         }

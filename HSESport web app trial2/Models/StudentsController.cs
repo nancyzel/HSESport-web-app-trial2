@@ -20,7 +20,16 @@ namespace HSESport_web_app_trial2.Models
         // GET: Students
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Students.ToListAsync());
+            var model = new StudentsForDataBase
+            {
+                Name = "",
+                Surname = "",
+                SecondName = "",
+                Email = "ymgordeev@hse.ru",
+                Password = "12345678", 
+                StudentsList = _context.Students.ToList(),
+            };
+            return View(model);
         }
 
         // GET: Students/Details/5

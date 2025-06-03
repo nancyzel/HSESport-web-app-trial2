@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Редактировать";
+    Layout = "Layout_Teacher";
 }
 
 <h1>Редактировать</h1>
@@ -52,5 +53,7 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

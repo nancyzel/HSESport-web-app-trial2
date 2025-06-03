@@ -1,0 +1,22 @@
+﻿@model HSESport_web_app_trial2.Models.BaseUserModel
+
+@{
+    ViewData["Title"] = "Информация о преподавателе";
+    Layout = "Layout_Teacher";
+
+}
+<h1>@ViewData["Title"]</h1>
+<h4>Имя преподавателя</h4>
+<p>@Model.Name</p>
+
+<hr />
+<h4>Фамилия преподавателя</h4>
+<p>@Model.Surname</p>
+
+<hr />
+<h4>Отчество преподавателя</h4>
+<p>@Model.SecondName</p>
+
+<hr />
+<h4>Адрес корпоративной почты преподавателя</h4>
+<p>@Model.Email</p>
