@@ -129,3 +129,39 @@ main {
 .info-section a.btn:hover {
     background-color: #003d7c; /* Светлее при наведении */
 }
+
+.tab-container {
+    gap: 10px;
+}
+
+.tab-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background-color: #fff;
+    color: #0056b3;
+    font-weight: bold;
+}
+
+.tab-button.active {
+    background-color: #0056b3;
+    color: white;
+}
+.login-form {
+    max-width: 400px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.login-form .form-control {
+    border: 2px solid transparent;
+    transition: border-color 0.3s ease;
+}
+
+.login-form .form-control:focus {
+    border-color: #0056b3;
+}
+.hidden {
+    display: none;
+}

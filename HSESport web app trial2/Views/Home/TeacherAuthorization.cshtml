@@ -3,25 +3,35 @@
 @{
     ViewData["Title"] = "Вход в систему";
 }
-<h1>Вход в систему через профиль преподавателя</h1>
-<a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StudentAuthorization"><u>Войти через профиль студента</u></a>
-<div class="row">
-    <div class="col-md-4">
-        <form asp-controller="Home" asp-action="TeacherEnter">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Войти" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
+<div class="text-center mt-5">
+    <h1>Вход в систему через профиль преподавателя</h1>
+</div>
+
+<div class="tab-container d-flex justify-content-center mb-4">
+    <a class="tab-button active" asp-area="" asp-controller="Home" asp-action="StudentAuthorization">Студент</a>
+    <a href="#" class="tab-button">Преподаватель</a>
+</div>
+
+<div class="login-form bg-primary text-white p-4 rounded">
+    <form asp-controller="Home" asp-action="TeacherEnter">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="control-label">Введите логин/почту</label>
+            <input asp-for="Email" class="form-control" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="control-label">Введите пароль</label>
+            <input asp-for="Password" class="form-control" />
+            <span asp-validation-for="Password" class="text-danger"></span>
+        </div>
+
+        <div class="mb-3">
+            <button type="submit" value="Войти" class="btn btn-light">Войти</button>
+        </div>
+    </form>
+
+    <a href="@Url.Action("Index", "Home")" class="text-white align-content-center">Вернуться на главный экран</a>
 </div>
