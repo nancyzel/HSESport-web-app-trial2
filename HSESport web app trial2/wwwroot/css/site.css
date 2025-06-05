@@ -23,12 +23,15 @@ body {
     background-color: #f4f4f4;
     color: #333;
     line-height: 1.6;
+    min-height: 100%;
 }
 
 header {
     background-color: #fff;
     padding: 20px 0;
     text-align: center;
+    font-family: Arial, sans-serif;
+    font-size: 25px;
 }
 
 main {
@@ -36,6 +39,36 @@ main {
     flex-direction: column;
     align-items: center;
     padding: 20px;
+}
+
+/* Флекс-контейнер */
+.d-flex.flex-column.min-vh-100 {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Основной контент (растягивается) */
+.flex-grow-1 {
+    flex-grow: 1;
+}
+
+footer {
+    background-color: #0056b3;
+    color: white !important;
+    text-align: center;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    font-size: 20px;
+    padding: 1rem 0;
+}
+
+footer a {
+    color: white !important;
+    text-decoration: none;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
@@ -89,7 +122,6 @@ main {
     margin-bottom: 20px;
 }
 
-/* Кнопки входа */
 .enter-buttons .btn {
     background-color: white;
     color: #0056b3;
@@ -99,22 +131,21 @@ main {
     cursor: pointer;
     margin: 5px;
     font-size: 1rem;
-    width: 80%; /* Ширина кнопок */
-    max-width: 300px; /* Максимальная ширина */
+    width: 80%;
+    max-width: 300px;
 }
 
-    .enter-buttons .btn:hover {
-        background-color: #e0e0e0; /* Эффект при наведении */
-    }
+.enter-buttons .btn:hover {
+    background-color: #e0e0e0;
+}
 
-/* Информационная секция */
 .info-section {
     display: flex;
     justify-content: space-between;
-    gap: 1000px; /* Расстояние между блоками */
+    gap: 100px; /*расстояние между блоками */
     width: 100%;
-    max-width: 800px;
-    margin: 0 auto; /* Центрирование */
+    max-width: 300px;
+    margin: 0 auto;
 }
 
 .info-section a.btn {
