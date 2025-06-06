@@ -41,18 +41,6 @@ main {
     padding: 20px;
 }
 
-/* ‘лекс-контейнер */
-.d-flex.flex-column.min-vh-100 {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-}
-
-/* ќсновной контент (раст€гиваетс€) */
-.flex-grow-1 {
-    flex-grow: 1;
-}
-
 footer {
     background-color: #0056b3;
     color: white !important;
@@ -63,7 +51,6 @@ footer {
     justify-content: center;
     font-family: Arial, sans-serif;
     font-size: 20px;
-    padding: 1rem 0;
 }
 
 footer a {
@@ -195,4 +182,23 @@ footer a {
 }
 .hidden {
     display: none;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+    weight: 100px;
+}
+
+.card h5 {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.card ul {
+    padding-left: 20px;
+}
+
+.card p strong {
+    font-weight: bold;
 }
