@@ -1,16 +1,17 @@
 ﻿@model HSESport_web_app_trial2.Models.Students
 
 @{
-    ViewData["Title"] = "Редактировать";
-    Layout = "Layout_Teacher";
+    ViewData["Title"] = "Создать";
+    Layout = "_Layout_Teacher";
 }
 
-<h1>Редактировать</h1>
+<h1>Создать</h1>
 
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="StudentId" class="control-label"></label>
                 <input asp-for="StudentId" class="form-control" />
@@ -42,7 +43,7 @@
                 <span asp-validation-for="AttendanceRate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Сохранить" class="btn btn-primary" />
+                <input type="submit" value="Создать" class="btn btn-primary" />
             </div>
         </form>
     </div>

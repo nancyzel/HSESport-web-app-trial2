@@ -1,8 +1,6 @@
-﻿@model HSESport_web_app_trial2.Models.Students
-
-@{
+﻿@{
     ViewData["Title"] = "Информация о студенте";
-    Layout = "Layout_Student";
+    Layout = "_Layout_Student";
 
 }
 <h1>@ViewData["Title"]</h1>
@@ -12,19 +10,19 @@
         <div class="card p-3 shadow-sm bg-light rounded">
             <div class="d-flex align-items-center mb-2">
                 <h5 class="mb-0">
-                    <p>@Model.Surname</p>
-                    <p>@Model.Name</p>
-                    <p>@Model.SecondName</p>
+                    <p>@ViewBag.StudentSurname</p>
+                    <p>@ViewBag.StudentName</p>
+                    <p>@ViewBag.StudentSecondName</p>
                 </h5>
             </div>
             <a href="#" class="btn btn-primary w-100 mb-2">Редактировать</a>
-            <p class="mb-0"><strong>Email:</strong> @Model.Email</p>
+            <p class="mb-0"><strong>Email:</strong> @ViewBag.StudentEmail</p>
         </div>
     </div>
     <div class="col-md-8">
         <div class="card p-3 shadow-sm bg-light rounded">
             <div class="mt-4">
-                <p class="mb-0"><strong>Общее количество посещений:</strong>@Model.AttendanceRate</p>
+                <p class="mb-0"><strong>Общее количество посещений: </strong>@ViewBag.StudentAttendanceRate</p>
             </div>
         </div>
     </div>

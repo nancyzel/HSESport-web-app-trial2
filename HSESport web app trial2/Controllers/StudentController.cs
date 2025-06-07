@@ -1,0 +1,36 @@
+﻿using HSESport_web_app_trial2.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace HSESport_web_app_trial2.Controllers
+{
+    public class StudentController : Controller
+    {
+        private readonly ILogger<StudentController> _logger;
+        private readonly MyDbContext _context;
+
+        public StudentController(ILogger<StudentController> logger, MyDbContext dbContext)
+        {
+            _logger = logger;
+            _context = dbContext;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> StudentPersonalAccount(int studentId)
+        {
+            var student = await _context.Students
+                .FirstOrDefaultAsync(s => s.StudentId == studentId);
+
+            if (student == null)
+                return NotFound();
+
+            ViewBag.StudentName = student.Name;
+            ViewBag.StudentSurname = student.Surname;
+            ViewBag.StudentSecondName = student.SecondName;
+            ViewBag.StudentEmail = student.Email;
+            ViewBag.StudentAttendanceRate = student.AttendanceRate;
+
+            return View(student);
+        }
+    }
+}

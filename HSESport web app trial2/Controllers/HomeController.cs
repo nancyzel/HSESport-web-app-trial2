@@ -2,7 +2,6 @@ using System.Diagnostics;
 using HSESport_web_app_trial2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace HSESport_web_app_trial2.Controllers
 {
@@ -44,7 +43,7 @@ namespace HSESport_web_app_trial2.Controllers
             {
                 if (user.Email == "ymgordeev@hse.ru" && user.Password == "12345678")
                 {
-                    return RedirectToAction(nameof(TeacherMainPage), "Home", user);
+                    return RedirectToAction("TeacherMainPage", "Teacher", user);
                 }
                 else
                 {
@@ -54,35 +53,9 @@ namespace HSESport_web_app_trial2.Controllers
             return View(user);
         }
 
-        public IActionResult TeacherMainPage(BaseUserModel teacher)
-        {
-            return View(teacher);
-        }
         public IActionResult TeacherEnterError()
         {
             return View();
-        }
-
-        [HttpPost]
-        public IActionResult TeacherPersonalInformation([Bind("Email,Password")] BaseUserModel user)
-        {
-            if (ModelState.IsValid)
-            {
-                if (user.Email == "ymgordeev@hse.ru" && user.Password == "12345678")
-                {
-                    user.Name = "Юрий";
-                    user.Surname = "Гордеев";
-                    user.SecondName = "Матвеевич";
-                }
-                return RedirectToAction(nameof(TeacherPersonalAccount), "Home", user);
-            }
-            return View(user);
-        }
-
-        public IActionResult TeacherPersonalAccount(BaseUserModel teacher)
-        {
-            ViewBag.UserRole = "Teacher";
-            return View(teacher);
         }
 
         public IActionResult StudentAuthorization()
@@ -90,22 +63,22 @@ namespace HSESport_web_app_trial2.Controllers
             return View();
         }
 
-        public async Task<bool> SearchStudentByEmailAndPassword(string userEmail, string userPassword)
+        public async Task<int> SearchStudentByEmailAndPassword(string userEmail, string userPassword)
         {
             if (_context.Students == null)
             {
-                return false;
+                return -1;
             }
             else
             {
-                var students = await _context.Students.FirstOrDefaultAsync(m => (m.Email == userEmail && m.Password == userPassword));
+                var students = await _context.Students.FirstOrDefaultAsync(m => m.Email == userEmail && m.Password == userPassword);
                 if (students == null)
                 {
-                    return false;
+                    return -1;
                 }
                 else
                 {
-                    return true;
+                    return students.StudentId;
                 }
             }
         }
@@ -115,36 +88,15 @@ namespace HSESport_web_app_trial2.Controllers
         {
             if (ModelState.IsValid)
             {
-                bool doesStudentWithEmailExist = await SearchStudentByEmailAndPassword(user.Email, user.Password);
-                if (doesStudentWithEmailExist)
-                    return RedirectToAction(nameof(StudentMainPage), "Home", user);
+                int studentId = await SearchStudentByEmailAndPassword(user.Email, user.Password);
+                if (studentId > 0)
+                    return RedirectToAction("StudentPersonalAccount", "Student", new { studentId = studentId });
                 else
                 {
                     return RedirectToAction(nameof(StudentEnterError));
                 }
             }
             return View(user);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> StudentPersonalInformation([Bind("Email,Password")] Students user)
-        {
-            if (ModelState.IsValid)
-            {
-                var student = await _context.Students.FirstOrDefaultAsync(m => m.Email == user.Email);
-                return RedirectToAction(nameof(StudentPersonalAccount), "Home", student);
-            }
-            return View(user);
-        }
-
-        public IActionResult StudentMainPage(Students student)
-        {
-            return View(student);
-        }
-
-        public IActionResult StudentPersonalAccount(Students student)
-        {
-            return View(student);
         }
 
         public IActionResult StudentEnterError()

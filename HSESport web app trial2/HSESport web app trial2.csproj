@@ -20,4 +20,8 @@
     <None Include="wwwroot\images\hse-sport-logo.png" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HSESport_web_app_trial2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 
-namespace HSESport_web_app_trial2.Models
+namespace HSESport_web_app_trial2.Controllers
 {
-    public class StudentsController : Controller
+    public class StudentsDataBaseController : Controller
     {
         private readonly MyDbContext _context;
 
-        public StudentsController(MyDbContext context)
+        public StudentsDataBaseController(MyDbContext context)
         {
             _context = context;
         }
@@ -26,7 +27,7 @@ namespace HSESport_web_app_trial2.Models
                 Surname = "",
                 SecondName = "",
                 Email = "ymgordeev@hse.ru",
-                Password = "12345678", 
+                Password = "12345678",
                 StudentsList = _context.Students.ToList(),
             };
             return View(model);
