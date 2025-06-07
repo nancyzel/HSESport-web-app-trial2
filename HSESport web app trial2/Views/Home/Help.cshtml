@@ -1,5 +1,17 @@
 ﻿@{
     ViewData["Title"] = "Помощь";
+    if (ViewBag.UserRole == "Student")
+    {
+        Layout = "_Layout_Student";
+    }
+    else if (ViewBag.UserRole == "Teacher")
+    {
+        Layout = "_Layout_Teacher";
+    }
+    else
+    {
+        Layout = "_Layout";
+    }
 }
 <h1>@ViewData["Title"]</h1>
 

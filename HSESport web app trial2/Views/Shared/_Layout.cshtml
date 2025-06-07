@@ -23,10 +23,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule">Расписание секций</a>
+                            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Главная страница</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="News">Новости</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="">Расписание секций</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="News" asp-route-userRole="">Новости</a>
                         </li>
                     </ul>
                 </div>
@@ -43,7 +46,7 @@
     <footer class="border-top footer">
         <div class="container">
             &copy; 2025 - HSESport |
-            <a asp-area="" asp-controller="Home" asp-action="Help">Техническая поддержка</a>
+            <a asp-area="" asp-controller="Home" asp-action="Help" asp-route-userRole="">Техническая поддержка</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

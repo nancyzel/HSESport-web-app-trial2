@@ -1,5 +1,7 @@
 ﻿using HSESport_web_app_trial2.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 
 namespace HSESport_web_app_trial2.Controllers
 {
@@ -12,11 +14,6 @@ namespace HSESport_web_app_trial2.Controllers
         {
             _logger = logger;
             _context = dbContext;
-        }
-
-        public IActionResult TeacherMainPage(BaseUserModel teacher)
-        {
-            return View(teacher);
         }
 
         [HttpPost]
@@ -38,6 +35,26 @@ namespace HSESport_web_app_trial2.Controllers
         public IActionResult TeacherPersonalAccount(BaseUserModel teacher)
         {
             ViewBag.UserRole = "Teacher";
+            return View(teacher);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> TeacherPersonalAccount(int userId)
+        {
+            var teacher = await _context.Teachers
+                .FirstOrDefaultAsync(t => t.TeacherId == userId);
+
+            if (teacher == null)
+                return NotFound();
+
+            ViewBag.UserRole = "Teacher";
+            ViewBag.UserId = userId;
+            ViewBag.TeacherName = teacher.Name;
+            ViewBag.TeacherSurname = teacher.Surname;
+            ViewBag.TeacherSecondName = teacher.SecondName;
+            ViewBag.TeacherEmail = teacher.Email;
+            ViewBag.TeacherSportSectionId = teacher.SportSectionId;
+
             return View(teacher);
         }
     }

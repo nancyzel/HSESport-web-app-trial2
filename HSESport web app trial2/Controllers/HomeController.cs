@@ -21,13 +21,17 @@ namespace HSESport_web_app_trial2.Controllers
             return View();
         }
 
-        public IActionResult Help()
+        public IActionResult Help(string userRole, int userId)
         {
+            ViewBag.UserRole = userRole;
+            ViewBag.UserId = userId;
             return View();
         }
 
-        public IActionResult Schedule()
+        public IActionResult Schedule(string userRole, int userId)
         {
+            ViewBag.UserRole = userRole;
+            ViewBag.UserId = userId;
             return View();
         }
 
@@ -43,7 +47,7 @@ namespace HSESport_web_app_trial2.Controllers
             {
                 if (user.Email == "ymgordeev@hse.ru" && user.Password == "12345678")
                 {
-                    return RedirectToAction("TeacherMainPage", "Teacher", user);
+                    return RedirectToAction("TeacherPersonalAccount", "Teacher", user);
                 }
                 else
                 {
@@ -90,7 +94,7 @@ namespace HSESport_web_app_trial2.Controllers
             {
                 int studentId = await SearchStudentByEmailAndPassword(user.Email, user.Password);
                 if (studentId > 0)
-                    return RedirectToAction("StudentPersonalAccount", "Student", new { studentId = studentId });
+                    return RedirectToAction("StudentPersonalAccount", "Student", new { userId = studentId });
                 else
                 {
                     return RedirectToAction(nameof(StudentEnterError));
@@ -104,8 +108,10 @@ namespace HSESport_web_app_trial2.Controllers
             return View();
         }
 
-        public IActionResult News()
+        public IActionResult News(string userRole, int userId)
         {
+            ViewBag.UserRole = userRole;
+            ViewBag.UserId = userId;
             return View();
         }
 

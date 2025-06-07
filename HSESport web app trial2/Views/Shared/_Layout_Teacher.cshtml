@@ -38,7 +38,7 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Таблица посещений</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule">Расписание секций</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="@ViewBag.UserRole">Расписание секций</a>
                         </li>
                     </ul>
                 </div>
@@ -54,7 +54,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - HSESport - <a asp-area="" asp-controller="Home" asp-action="Help">Помощь</a>
+            &copy; 2025 - HSESport - <a asp-area="" asp-controller="Home" asp-action="Help" asp-route-userRole="@ViewBag.UserRole">Помощь</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
