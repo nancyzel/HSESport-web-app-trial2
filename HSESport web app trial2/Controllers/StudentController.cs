@@ -24,6 +24,8 @@ namespace HSESport_web_app_trial2.Controllers
             if (student == null)
                 return NotFound();
 
+            ViewBag.UserRole = "Student";
+            ViewBag.StudentId = studentId;
             ViewBag.StudentName = student.Name;
             ViewBag.StudentSurname = student.Surname;
             ViewBag.StudentSecondName = student.SecondName;
