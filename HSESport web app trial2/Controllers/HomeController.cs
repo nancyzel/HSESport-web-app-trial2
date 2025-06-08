@@ -70,7 +70,7 @@ namespace HSESport_web_app_trial2.Controllers
             {
                 int teacherId = await SearchTeacherByEmailAndPassword(user.Email, user.Password);
                 if (teacherId > 0)
-                    return RedirectToAction("TeacherPersonalAccount", "Teacher", new { userId = teacherId });
+                    return RedirectToAction("SectionStudentsList", "Teacher", new { userId = teacherId });
                 else
                 {
                     return RedirectToAction(nameof(TeacherEnterError));

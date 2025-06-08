@@ -14,7 +14,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <div class="header-logo text-center mb-4">
-                    <a class="navbar-brand" asp-controller="Teacher" asp-action="TeacherMainPage"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle; margin-right: 10px;"></a>
+                    <a class="navbar-brand" asp-controller="Teacher" asp-action="TeacherPersonalAccount" asp-route-userId="@ViewBag.UserId"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle; margin-right: 10px;"></a>
                 </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -23,14 +23,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-@*                             <form asp-controller="Teacher" asp-action="TeacherPersonalInformation">
-                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <input type="hidden" asp-for="Email" value="@Model.Email">
-                                <input type="hidden" asp-for="Password" value="@Model.Password">
-                                <div class="form-group">
-                                    <input type="submit" value="Информация о преподавателе" />
-                                </div>
-                            </form> *@
+                            <a class="navbar-brand" asp-controller="Student" asp-action="TeacherPersonalAccount" asp-route-userId="@ViewBag.UserId">Информация о преподавателе</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Таблица посещений</a>

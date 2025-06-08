@@ -2,46 +2,28 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
+using System.Linq;
 
 namespace HSESport_web_app_trial2.Controllers
 {
     public class TeacherController : Controller
     {
         private readonly ILogger<TeacherController> _logger;
-        private readonly MyDbContextTeachers _context;
+        private readonly MyDbContextStudents _context_Students;
 
-        public TeacherController(ILogger<TeacherController> logger, MyDbContextTeachers dbContext)
+        private readonly MyDbContextTeachers _context_Teachers;
+
+        public TeacherController(ILogger<TeacherController> logger, MyDbContextTeachers dbContextTeachers, MyDbContextStudents dbContextStudents)
         {
             _logger = logger;
-            _context = dbContext;
-        }
-
-        [HttpPost]
-        public IActionResult TeacherPersonalInformation([Bind("Email,Password")] BaseUserModel user)
-        {
-            if (ModelState.IsValid)
-            {
-                if (user.Email == "ymgordeev@hse.ru" && user.Password == "12345678")
-                {
-                    user.Name = "Юрий";
-                    user.Surname = "Гордеев";
-                    user.SecondName = "Матвеевич";
-                }
-                return RedirectToAction(nameof(TeacherPersonalAccount), "Teacher", user);
-            }
-            return View(user);
-        }
-
-        public IActionResult TeacherPersonalAccount(BaseUserModel teacher)
-        {
-            ViewBag.UserRole = "Teacher";
-            return View(teacher);
+            _context_Teachers = dbContextTeachers;
+            _context_Students = dbContextStudents;
         }
 
         [HttpGet]
         public async Task<IActionResult> TeacherPersonalAccount(int userId)
         {
-            var teacher = await _context.Teachers
+            var teacher = await _context_Teachers.Teachers
                 .FirstOrDefaultAsync(t => t.TeacherId == userId);
 
             if (teacher == null)
@@ -56,6 +38,28 @@ namespace HSESport_web_app_trial2.Controllers
             ViewBag.TeacherSportSectionId = teacher.SportSectionId;
 
             return View(teacher);
+        }
+
+        public async Task<IActionResult> SectionStudentsList(int userId)
+        {
+            var teacher = await _context_Teachers.Teachers.FirstOrDefaultAsync(teacher => teacher.TeacherId == userId);
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+            else
+            {
+                var studentAttendanceDates = await _context_Teachers.AttendanceDates
+                    .Where(attendance => attendance.SectionId == teacher.SportSectionId)
+                    .ToListAsync();
+                var pairs = (from attendance in studentAttendanceDates
+                            from student in _context_Students.Students
+                            where student.StudentId == attendance.StudentId
+                            select (AttendanceDate: attendance.Date, StudentName: student.Name)).ToList();
+                var section = await _context_Teachers.Sections.FirstOrDefaultAsync(section => section.SectionId == teacher.SportSectionId);
+                ViewBag.SectionName = section?.Name;
+                return View(pairs);
+            }
         }
     }
 }

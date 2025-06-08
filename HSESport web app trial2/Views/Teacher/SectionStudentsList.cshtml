@@ -1,0 +1,32 @@
+﻿@model List<(DateOnly? AttendanceDate, string StudentName)>
+@{
+    ViewData["Title"] = "Информация о преподавателе";
+    Layout = "_Layout_Teacher";
+}
+<h1>@ViewBag.SectionName</h1>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Дата посещения
+            </th>
+            <th>
+                Имя студента
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AttendanceDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.StudentName)
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -10,6 +10,10 @@ namespace HSESport_web_app_trial2.Models
             : base(options)
         { }
         public DbSet<Teachers> Teachers { get; set; }
+
+        public DbSet<Sections> Sections { get; set; }
+
+        public DbSet<AttendanceDates> AttendanceDates { get; set; }
     }
 }
 
