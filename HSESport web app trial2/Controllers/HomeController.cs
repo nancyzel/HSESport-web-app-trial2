@@ -8,12 +8,14 @@ namespace HSESport_web_app_trial2.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly MyDbContext _context;
+        private readonly MyDbContextStudents _context_Students;
+        private readonly MyDbContextTeachers _context_Teachers;
 
-        public HomeController(ILogger<HomeController> logger, MyDbContext dbContext)
+        public HomeController(ILogger<HomeController> logger, MyDbContextStudents dbContextStudents, MyDbContextTeachers dbContextTeachers)
         {
             _logger = logger;
-            _context = dbContext;
+            _context_Students = dbContextStudents;
+            _context_Teachers = dbContextTeachers;
         }
 
         public IActionResult Index()
@@ -43,13 +45,13 @@ namespace HSESport_web_app_trial2.Controllers
 
         public async Task<int> SearchTeacherByEmailAndPassword(string userEmail, string userPassword)
         {
-            if (_context.Teachers == null)
+            if (_context_Teachers.Teachers == null)
             {
                 return -1;
             }
             else
             {
-                var teachers = await _context.Teachers.FirstOrDefaultAsync(m => m.Email == userEmail && m.Password == userPassword);
+                var teachers = await _context_Teachers.Teachers.FirstOrDefaultAsync(m => m.Email == userEmail && m.Password == userPassword);
                 if (teachers == null)
                 {
                     return -1;
@@ -89,13 +91,13 @@ namespace HSESport_web_app_trial2.Controllers
 
         public async Task<int> SearchStudentByEmailAndPassword(string userEmail, string userPassword)
         {
-            if (_context.Students == null)
+            if (_context_Students.Students == null)
             {
                 return -1;
             }
             else
             {
-                var students = await _context.Students.FirstOrDefaultAsync(m => m.Email == userEmail && m.Password == userPassword);
+                var students = await _context_Students.Students.FirstOrDefaultAsync(m => m.Email == userEmail && m.Password == userPassword);
                 if (students == null)
                 {
                     return -1;
