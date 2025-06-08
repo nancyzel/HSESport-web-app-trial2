@@ -9,6 +9,7 @@ builder.Services
     .AddDbContext<MyDbContextTeachers>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("TeachersDBConnection") ?? throw new InvalidOperationException("Connection string 'TeacherDBConnection' not found.")));
 
+
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -36,6 +37,5 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
-
 
 app.Run();
