@@ -142,7 +142,22 @@ footer a {
 .info-section a.btn:hover {
     background-color: #003d7c;
 }
-
+.section .btn {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin: 5px;
+    font-size: 1rem;
+    width: 80%;
+    max-width: 300px;
+}
+    .section .btn:hover {
+        background-color: #e0e0e0;
+        color: #0056b3;
+    } 
 .tab-container {
     gap: 10px;
 }
@@ -185,6 +200,12 @@ footer a {
     weight: 100px;
 }
 
+.card.teacher {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 200px;
+}
 .card h5 {
     font-size: 1.2rem;
     font-weight: bold;

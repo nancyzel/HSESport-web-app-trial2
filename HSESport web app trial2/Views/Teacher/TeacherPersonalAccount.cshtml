@@ -5,17 +5,24 @@
 
 }
 <h1>@ViewData["Title"]</h1>
-<h4>Имя преподавателя</h4>
-<p>@ViewBag.TeacherName</p>
 
-<hr />
-<h4>Фамилия преподавателя</h4>
-<p>@ViewBag.TeacherSurname</p>
-
-<hr />
-<h4>Отчество преподавателя</h4>
-<p>@ViewBag.TeacherSecondName</p>
-
-<hr />
-<h4>Адрес корпоративной почты преподавателя</h4>
-<p>@ViewBag.TeacherEmail</p>
+<div class="row mb-10">
+    <div class="col-md-8">
+        <div class="card teacher p-3 shadow-sm bg-light rounded">
+            <!-- Информация о преподавателе -->
+            <div class="d-flex flex-column align-items-start">
+                <p>@ViewBag.TeacherSurname @ViewBag.TeacherName @ViewBag.TeacherSecondName</p>
+                <!-- Кнопка редактирования -->
+                <a href="#" class="btn btn-primary mt-2">Редактировать</a>
+                <!-- Email -->
+                <p class="mt-3"><strong>Email:</strong> @ViewBag.TeacherEmail</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card teacher p-3 shadow-sm bg-light rounded">
+            <!-- Секции -->
+            <p><strong>Секции:</strong> @ViewBag.TeacherSportSectionId</p>
+        </div>
+    </div>
+</div>
