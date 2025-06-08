@@ -38,7 +38,7 @@ namespace HSESport_web_app_trial2.Controllers
             return View(teacher);
         }
 
-        /*[HttpGet]
+        [HttpGet]
         public async Task<IActionResult> TeacherPersonalAccount(int userId)
         {
             var teacher = await _context.Teachers
@@ -56,6 +56,6 @@ namespace HSESport_web_app_trial2.Controllers
             ViewBag.TeacherSportSectionId = teacher.SportSectionId;
 
             return View(teacher);
-        }*/
+        }
     }
 }
