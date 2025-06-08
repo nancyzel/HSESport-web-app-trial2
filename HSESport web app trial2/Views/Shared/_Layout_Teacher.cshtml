@@ -14,7 +14,7 @@
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
                 <div class="header-logo text-center mb-4">
-                    <a class="navbar-brand" asp-controller="Teacher" asp-action="TeacherPersonalAccount" asp-route-userId="@ViewBag.UserId"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle; margin-right: 10px;"></a>
+                    <a class="navbar-brand" asp-controller="Teacher" asp-action="SectionStudentsList" asp-route-userId="@ViewBag.UserId"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle; margin-right: 10px;"></a>
                 </div>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -23,15 +23,20 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
                         <li class="nav-item">
-                            <a class="navbar-brand" asp-controller="Student" asp-action="TeacherPersonalAccount" asp-route-userId="@ViewBag.UserId">Информация о преподавателе</a>
+                            <a class="navbar-brand" asp-controller="Teacher" asp-action="TeacherPersonalAccount" asp-route-userId="@ViewBag.UserId">Информация о преподавателе</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Students" asp-action="Index">Таблица посещений</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Teacher" asp-action="SectionStudentsList" asp-route-userId="@ViewBag.UserId">Таблица посещений</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="@ViewBag.UserRole">Расписание секций</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="@ViewBag.UserRole" asp-route-userId="@ViewBag.UserId">Расписание секций</a>
                         </li>
                     </ul>
+                </div>
+                <div style="text-align: right; width: 100%;">
+                    <div style="display: inline-block;">
+                        <a asp-area="" asp-controller="Home" asp-action="Index" style="color:red">Выйти из профиля</a>
+                    </div>
                 </div>
             </div>
         </nav>
@@ -45,7 +50,7 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - HSESport - <a asp-area="" asp-controller="Home" asp-action="Help" asp-route-userRole="@ViewBag.UserRole">Помощь</a>
+            &copy; 2025 - HSESport - <a asp-area="" asp-controller="Home" asp-action="Help" asp-route-userRole="@ViewBag.UserRole" asp-route-userId="@ViewBag.UserId">Помощь</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

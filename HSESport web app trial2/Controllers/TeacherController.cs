@@ -57,9 +57,18 @@ namespace HSESport_web_app_trial2.Controllers
                             where student.StudentId == attendance.StudentId
                             select (AttendanceDate: attendance.Date, StudentName: student.Name)).ToList();
                 var section = await _context_Teachers.Sections.FirstOrDefaultAsync(section => section.SectionId == teacher.SportSectionId);
+                ViewBag.UserRole = "Teacher";
                 ViewBag.SectionName = section?.Name;
+                ViewBag.UserId = userId;
                 return View(pairs);
             }
+        }
+
+        public IActionResult AddingStudentsToSection(int userId)
+        {
+            ViewBag.UserRole = "Teacher";
+            ViewBag.UserId = userId;
+            return View();
         }
     }
 }
