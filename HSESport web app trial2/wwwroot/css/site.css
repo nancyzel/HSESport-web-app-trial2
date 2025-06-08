@@ -27,6 +27,7 @@ body {
 }
 
 header {
+    display: flex;
     background-color: #fff;
     padding: 20px 0;
     text-align: center;
@@ -66,11 +67,7 @@ footer a {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
-.enter-buttons .btn {
-    width: 300px;
-    font-size: 18px;
-    padding: 10px;
-}
+
 .header-logo {
     display: flex;
     justify-content: center;
@@ -128,8 +125,6 @@ footer a {
 
 .info-section {
     display: flex;
-    justify-content: space-between;
-    gap: 100px; /*рассто€ние между блоками */
     width: 100%;
     max-width: 300px;
     margin: 0 auto;
@@ -145,7 +140,7 @@ footer a {
 }
 
 .info-section a.btn:hover {
-    background-color: #003d7c; /* —ветлее при наведении */
+    background-color: #003d7c;
 }
 
 .tab-container {
