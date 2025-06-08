@@ -1,5 +1,4 @@
-﻿@model HSESport_web_app_trial2.Models.BaseUserModel
-
+﻿
 @{
     ViewData["Title"] = "Информация о преподавателе";
     Layout = "_Layout_Teacher";
@@ -7,16 +6,16 @@
 }
 <h1>@ViewData["Title"]</h1>
 <h4>Имя преподавателя</h4>
-<p>@Model.Name</p>
+<p>@ViewBag.TeacherName</p>
 
 <hr />
 <h4>Фамилия преподавателя</h4>
-<p>@Model.Surname</p>
+<p>@ViewBag.TeacherSurname</p>
 
 <hr />
 <h4>Отчество преподавателя</h4>
-<p>@Model.SecondName</p>
+<p>@ViewBag.TeacherSecondName</p>
 
 <hr />
 <h4>Адрес корпоративной почты преподавателя</h4>
-<p>@Model.Email</p>
+<p>@ViewBag.TeacherEmail</p>

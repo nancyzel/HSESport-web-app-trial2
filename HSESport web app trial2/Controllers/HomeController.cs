@@ -40,15 +40,35 @@ namespace HSESport_web_app_trial2.Controllers
             return View();
         }
 
+
+        public async Task<int> SearchTeacherByEmailAndPassword(string userEmail, string userPassword)
+        {
+            if (_context.Teachers == null)
+            {
+                return -1;
+            }
+            else
+            {
+                var teachers = await _context.Teachers.FirstOrDefaultAsync(m => m.Email == userEmail && m.Password == userPassword);
+                if (teachers == null)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return teachers.TeacherId;
+                }
+            }
+        }
+
         [HttpPost]
-        public IActionResult TeacherEnter([Bind("Email,Password")] BaseUserModel user)
+        public async Task<IActionResult> TeacherEnter([Bind("Email,Password")] BaseUserModel user)
         {
             if (ModelState.IsValid)
             {
-                if (user.Email == "ymgordeev@hse.ru" && user.Password == "12345678")
-                {
-                    return RedirectToAction("TeacherPersonalAccount", "Teacher", user);
-                }
+                int teacherId = await SearchTeacherByEmailAndPassword(user.Email, user.Password);
+                if (teacherId > 0)
+                    return RedirectToAction("TeacherPersonalAccount", "Teacher", new { userId = teacherId });
                 else
                 {
                     return RedirectToAction(nameof(TeacherEnterError));

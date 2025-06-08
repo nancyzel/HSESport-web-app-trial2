@@ -4,7 +4,8 @@ using HSESport_web_app_trial2.Data;
 using HSESport_web_app_trial2.Models;
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MyDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'HSESport_web_app_trial2Context' not found.")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found."))
+    .UseSqlServer(builder.Configuration.GetConnectionString("TeachersDBConnection") ?? throw new InvalidOperationException("Connection string 'TeachersDBConnection' not found.")));
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
