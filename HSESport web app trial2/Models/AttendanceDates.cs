@@ -1,10 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HSESport_web_app_trial2.Models
 {
     public class AttendanceDates
     {
         [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)] // Указываем автоинкремент
         [Display(Name = "Id посещения")]
         /// <summary>
         /// Id посещения

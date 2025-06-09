@@ -1,35 +1,49 @@
-﻿@model List<(DateOnly? AttendanceDate, string StudentName)>
+﻿@model IEnumerable<HSESport_web_app_trial2.Models.Students>
 @{
-    ViewData["Title"] = "Информация о преподавателе";
+    ViewData["Title"] = "Список студентов секции";
     Layout = "_Layout_Teacher";
 }
+
 <h1>@ViewBag.SectionName</h1>
 
-<table class="table">
+<!-- Сообщения об успехе или ошибке -->
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<table class="table table-bordered">
     <thead>
         <tr>
-            <th>
-                Дата посещения
-            </th>
-            <th>
-                Имя студента
-            </th>
+            <th>Фамилия</th>
+            <th>Имя</th>
+            <th>Отчество</th>
+            <th>Email</th>
+            <th>Посещения</th>
+            <th>Действия</th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var student in ViewBag.Students)
         {
             <tr>
+                <td>@student.Surname</td>
+                <td>@student.Name</td>
+                <td>@student.SecondName</td>
+                <td>@student.Email</td>
+                <td>@student.AttendanceRate</td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.AttendanceDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StudentName)
+                    <form asp-controller="Teacher" asp-action="AddAttendance" method="post">
+                        <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                        <input type="hidden" name="studentId" value="@student.StudentId" />
+                        <button type="submit" class="btn btn-success">Добавить посещение</button>
+                    </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-<a class="btn section" asp-area="" asp-controller="Teacher" asp-action="AddingStudentsToSection" asp-route-userId="@ViewBag.UserId">Добавить посещения студентам</a>
-
