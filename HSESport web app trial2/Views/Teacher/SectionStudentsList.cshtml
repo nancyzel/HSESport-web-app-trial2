@@ -2,9 +2,12 @@
 @{
     ViewData["Title"] = "Список студентов секции";
     Layout = "_Layout_Teacher";
+
+    // Безопасно получаем имя текущей секции
+    string currentSectionName = ViewBag.SectionName?.ToString() ?? "Все доступные секции";
 }
 
-<h1>@ViewBag.SectionName</h1>
+<h1>@currentSectionName</h1>
 
 <!-- Сообщения об успехе или ошибке -->
 @if (TempData["Success"] != null)
@@ -15,6 +18,21 @@
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
+
+<!-- Форма для выбора секции -->
+<form asp-controller="Teacher" asp-action="SectionStudentsList" method="get">
+    <input type="hidden" name="userId" value="@ViewBag.UserId" />
+    <label for="sectionSelector">Выберите секцию:</label>
+    <select name="sectionId" id="sectionSelector" onchange="this.form.submit()">
+        <option value="" selected="@(string.IsNullOrEmpty(Context.Request.Query["sectionId"].ToString()) ? "selected" : null)">Все доступные секции</option>
+        @foreach (var sec in ViewBag.TeacherSections)
+        {
+            <option value="@sec.SectionId" selected="@(currentSectionName == sec.Name ? "selected" : null)">
+                @sec.Name
+            </option>
+        }
+    </select>
+</form>
 
 <table class="table table-bordered">
     <thead>
@@ -41,6 +59,7 @@
                     <form asp-controller="Teacher" asp-action="AddAttendance" method="post">
                         <input type="hidden" name="userId" value="@ViewBag.UserId" />
                         <input type="hidden" name="studentId" value="@student.StudentId" />
+                        <input type="hidden" name="sectionId" value="@(Context.Request.Query["sectionId"].FirstOrDefault() ?? "")" />
                         <button type="submit" class="btn btn-success">Добавить посещение</button>
                     </form>
                 </td>
@@ -48,7 +67,8 @@
                     <form asp-controller="Teacher" asp-action="DeleteAttendance" method="post">
                         <input type="hidden" name="userId" value="@ViewBag.UserId" />
                         <input type="hidden" name="studentId" value="@student.StudentId" />
-                        <button type="submit" class="btn btn-danger">Удалить посещение</button>
+                        <input type="hidden" name="sectionId" value="@(Context.Request.Query["sectionId"].FirstOrDefault() ?? "")" />
+                        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить посещение?');">Удалить посещение</button>
                     </form>
                 </td>
             </tr>

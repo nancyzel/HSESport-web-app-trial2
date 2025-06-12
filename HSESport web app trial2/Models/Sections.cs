@@ -49,5 +49,8 @@ namespace HSESport_web_app_trial2.Models
         {
             get; set;
         }
+
+        public ICollection<TeacherSection> TeacherSections { get; set; } = new List<TeacherSection>();
+        public ICollection<StudentsSections> StudentsSections { get; set; } = new List<StudentsSections>();
     }
 }

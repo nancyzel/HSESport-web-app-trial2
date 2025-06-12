@@ -44,7 +44,7 @@ def get_db_connection():
 
 # В файле бота, в функции get_student_attendance
 async def get_student_attendance(email):
-    # Удаляем проверку кэша
+    # Удаляем проверку кэша, как было сделано ранее
     # cache_key = f"attendance_{email}"
     # if cache_key in cache:
     #     return cache[cache_key], None
@@ -52,21 +52,26 @@ async def get_student_attendance(email):
     async with connection_semaphore:
         with get_db_connection() as conn:
             if not conn:
-                return None, "Ошибка подключения к базе данных"
+                return None, None, "Ошибка подключения к базе данных"
 
             try:
                 cursor = conn.cursor()
-                query = "SELECT AttendanceRate FROM Students WHERE Email = ?"
+                # ИЗМЕНЕНИЕ: Запрашиваем Name, Surname и AttendanceRate
+                query = "SELECT Name, Surname, AttendanceRate FROM Students WHERE Email = ?"
                 cursor.execute(query, email)
                 result = cursor.fetchone()
 
                 if result:
-                    # cache[cache_key] = result[0] # Удаляем запись в кэш
-                    return result[0], None
+                    # Возвращаем имя, фамилию и количество посещений
+                    name = result[0]
+                    surname = result[1]
+                    attendance_rate = result[2]
+                    # cache[cache_key] = (name, surname, attendance_rate) # Удаляем запись в кэш
+                    return name, surname, attendance_rate, None
                 else:
-                    return None, "Студент с такой почтой не найден"
+                    return None, None, None, "Студент с такой почтой не найден"
             except pyodbc.Error as e:
-                return None, f"Ошибка запроса к базе данных: {e}"
+                return None, None, None, f"Ошибка запроса к базе данных: {e}"
 
 
 async def start(update, context):
@@ -80,7 +85,8 @@ async def handle_email(update, context):
     email = update.message.text
     context.user_data['email'] = email
 
-    attendance, error = await get_student_attendance(email)
+    # ИЗМЕНЕНИЕ: Получаем имя, фамилию и количество посещений
+    name, surname, attendance, error = await get_student_attendance(email)
 
     if error:
         await update.message.reply_text(
@@ -88,15 +94,27 @@ async def handle_email(update, context):
         )
         return EMAIL
 
+    context.user_data['name'] = name
+    context.user_data['surname'] = surname
     context.user_data['attendance'] = attendance
+
     keyboard = [
         [telegram.KeyboardButton("Посмотреть ещё раз")],
         [telegram.KeyboardButton("Ввести другую почту")]
     ]
     reply_markup = telegram.ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
+    # ИЗМЕНЕНИЕ: Форматируем имя и фамилию, убирая лишние пробелы
+    full_name_parts = []
+    if name:
+        full_name_parts.append(str(name).strip())
+    if surname:
+        full_name_parts.append(str(surname).strip())
+
+    display_name = " ".join(full_name_parts)
+
     await update.message.reply_text(
-        f"Количество посещений: {attendance}\n\nЧто хочешь сделать?",
+        f"Студент: {display_name}\nКоличество посещений: {attendance}\n\nЧто хочешь сделать?",
         reply_markup=reply_markup
     )
     return CHOICE
@@ -115,7 +133,8 @@ async def handle_choice(update, context):
             return EMAIL
 
         # >>> ЭТО КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: СНОВА ЗАПРАШИВАЕМ ДАННЫЕ ИЗ БД <<<
-        attendance, error = await get_student_attendance(email)
+        # ИЗМЕНЕНИЕ: Получаем имя, фамилию и количество посещений
+        name, surname, attendance, error = await get_student_attendance(email)
 
         if error:
             # Обрабатываем возможные ошибки при повторном запросе
@@ -124,8 +143,9 @@ async def handle_choice(update, context):
             )
             return EMAIL
 
-        # Обновляем attendance в user_data, хотя это и не строго обязательно,
-        # так как мы сразу используем новое значение.
+        # Обновляем данные в user_data
+        context.user_data['name'] = name
+        context.user_data['surname'] = surname
         context.user_data['attendance'] = attendance
 
         keyboard = [
@@ -133,8 +153,17 @@ async def handle_choice(update, context):
             [telegram.KeyboardButton("Ввести другую почту")]
         ]
         reply_markup = telegram.ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
+        # ИЗМЕНЕНИЕ: Форматируем имя и фамилию, убирая лишние пробелы
+        full_name_parts = []
+        if name:
+            full_name_parts.append(str(name).strip())
+        if surname:
+            full_name_parts.append(str(surname).strip())
+
+        display_name = " ".join(full_name_parts)
+
         await update.message.reply_text(
-            f"Количество посещений: {attendance}\n\nЧто хочешь сделать?",
+            f"Студент: {display_name}\n\nКоличество посещений: {attendance}\n\nЧто хочешь сделать?",
             reply_markup=reply_markup
         )
         return CHOICE
@@ -149,7 +178,6 @@ async def handle_choice(update, context):
             "Пожалуйста, выбери одну из предложенных опций."
         )
         return CHOICE
-
 
 
 async def cancel(update, context):

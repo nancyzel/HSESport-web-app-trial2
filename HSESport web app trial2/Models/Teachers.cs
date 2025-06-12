@@ -50,15 +50,6 @@ namespace HSESport_web_app_trial2.Models
             get; set;
         }
 
-        [Display(Name = "Id секции, которую ведет преподаватель")]
-        /// <summary>
-        /// Id секции, которую ведет преподаватель
-        /// </summary>
-        public int SportSectionId
-        {
-            get; set;
-        }
-
         [Display(Name = "Пароль преподавателя")]
         /// <summary>
         /// Пароль преподавателя
@@ -67,5 +58,7 @@ namespace HSESport_web_app_trial2.Models
         {
             get; set;
         }
+
+        public ICollection<TeacherSection> TeacherSections { get; set; } = new List<TeacherSection>();
     }
 }
