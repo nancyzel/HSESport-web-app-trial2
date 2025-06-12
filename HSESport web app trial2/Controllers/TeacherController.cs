@@ -288,6 +288,53 @@ namespace HSESport_web_app_trial2.Controllers
             return RedirectToAction(nameof(SectionStudentsList), new { userId, sectionId, showAllStudentsForAdd = false });
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateTeacherCredentials(int userId, string newEmail, string? newPassword)
+        {
+            var teacher = await _context_Teachers.Teachers.FindAsync(userId);
+
+            if (teacher == null)
+            {
+                TempData["Error"] = "Учитель не найден. Невозможно обновить данные.";
+                return RedirectToAction(nameof(TeacherPersonalAccount), new { userId = userId });
+            }
+
+            // Обновляем Email, если он был изменен и не пуст
+            if (!string.IsNullOrEmpty(newEmail) && teacher.Email != newEmail)
+            {
+                // Проверим, нет ли уже такого email у другого преподавателя
+                if (await _context_Teachers.Teachers.AnyAsync(t => t.Email == newEmail && t.TeacherId != userId))
+                {
+                    TempData["Error"] = "Email уже используется другим преподавателем.";
+                    return RedirectToAction(nameof(TeacherPersonalAccount), new { userId = userId });
+                }
+                teacher.Email = newEmail;
+            }
+
+            // Обновляем пароль, если он был введен (не пуст)
+            if (!string.IsNullOrEmpty(newPassword))
+            {
+                // ХЭШширование
+                teacher.Password = newPassword;
+            }
+
+            try
+            {
+                _context_Teachers.Teachers.Update(teacher);
+                await _context_Teachers.SaveChangesAsync();
+                TempData["Success"] = "Данные успешно обновлены!";
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Ошибка при обновлении данных преподавателя ID: {UserId}", userId);
+                TempData["Error"] = "Произошла ошибка при сохранении данных.";
+            }
+
+            return RedirectToAction(nameof(TeacherPersonalAccount), new { userId = userId });
+        }
+
+
         public IActionResult AddingStudentsToSection(int userId)
         {
             ViewBag.UserRole = "Teacher";
