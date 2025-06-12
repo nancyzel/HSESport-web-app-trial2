@@ -118,6 +118,12 @@ namespace HSESport_web_app_trial2.Controllers
             if (student == null)
                 return NotFound();
 
+            if (student.AttendanceRate <= 0)
+            {
+                TempData["Error"] = $"Невозможно удалить посещение. У студента {student.Name} {student.Surname} уже 0 посещений.";
+                return RedirectToAction(nameof(SectionStudentsList), new { userId });
+            }
+
             // Создаём запись в AttendanceDates
             var attendance = new AttendanceDates
             {
