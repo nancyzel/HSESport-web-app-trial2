@@ -9,6 +9,8 @@ namespace HSESport_web_app_trial2.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly MyDbContextTeachers _context_Teachers;
+        private readonly MyDbContextTeachers _context_;
+
 
         public HomeController(ILogger<HomeController> logger,MyDbContextTeachers dbContextTeachers)
         {
