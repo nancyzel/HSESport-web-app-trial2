@@ -12,7 +12,7 @@ EMAIL, CHOICE = range(2)
 CONNECTION_STRING = (
     'DRIVER={ODBC Driver 17 for SQL Server};'
     r'SERVER=Chazik\SQLEXPRESS;'
-    r'DATABASE=HSESport;'
+    r'DATABASE=TeachersDataBase;'
     'Trusted_Connection=yes;'
 )
 

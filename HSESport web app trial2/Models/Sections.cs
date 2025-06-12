@@ -32,24 +32,6 @@ namespace HSESport_web_app_trial2.Models
             get; set;
         }
 
-        [Display(Name = "Время начала секции")]
-        /// <summary>
-        /// время начала секции
-        /// </summary>
-        public TimeSpan? StartTime
-        {
-            get; set;
-        }
-
-        [Display(Name = "Время конца секции")]
-        /// <summary>
-        /// время конца секции
-        /// </summary>
-        public TimeSpan? EndTime
-        {
-            get; set;
-        }
-
         public ICollection<TeacherSection> TeacherSections { get; set; } = new List<TeacherSection>();
         public ICollection<StudentsSections> StudentsSections { get; set; } = new List<StudentsSections>();
     }

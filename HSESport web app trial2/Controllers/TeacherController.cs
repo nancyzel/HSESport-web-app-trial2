@@ -41,7 +41,8 @@ namespace HSESport_web_app_trial2.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> SectionStudentsList(int userId, int? sectionId = null)
+        // ИЗМЕНЕНИЕ: Добавлен параметр searchSurname для фильтрации
+        public async Task<IActionResult> SectionStudentsList(int userId, int? sectionId = null, string? searchSurname = null)
         {
             var teacher = await _context_Teachers.Teachers
                 .Include(t => t.TeacherSections)
@@ -53,33 +54,89 @@ namespace HSESport_web_app_trial2.Controllers
                 return NotFound();
             }
 
-            var teacherSectionIds = teacher.TeacherSections.Select(ts => ts.SectionId).ToList();
+            // ИЗМЕНЕНИЕ: Получаем список секций учителя напрямую из объекта teacher
+            List<HSESport_web_app_trial2.Models.Sections> teacherSectionsList = teacher.TeacherSections.Select(ts => ts.Section).ToList();
+            var teacherSectionIds = teacherSectionsList.Select(s => s.SectionId).ToList();
 
-            // Изменяем запрос для получения студентов через StudentsSections
+            string currentSectionName = "Все доступные секции"; // Имя для отображения в заголовке
+            string effectiveSectionId = sectionId?.ToString() ?? ""; // ID секции, которая будет использоваться для фильтрации
+
+            // ИЗМЕНЕНИЕ: Логика выбора первой секции по умолчанию и перенаправление
+            // Если sectionId не передан в URL (первая загрузка или сброс фильтра),
+            // и у учителя есть хотя бы одна секция, выбираем первую секцию по умолчанию.
+            if (!sectionId.HasValue && teacherSectionsList.Any())
+            {
+                var defaultSection = teacherSectionsList.First();
+                effectiveSectionId = defaultSection.SectionId.ToString();
+                currentSectionName = defaultSection.Name;
+
+                // Важно: перенаправляем, чтобы URL обновился с ID выбранной по умолчанию секции.
+                // Это гарантирует, что контроллер также получит этот ID для фильтрации студентов
+                // в последующих запросах и формы будут передавать правильный ID.
+                return RedirectToAction("SectionStudentsList", "Teacher", new { userId = userId, sectionId = defaultSection.SectionId, searchSurname = searchSurname });
+            }
+            else if (sectionId.HasValue) // Если sectionId передан в URL
+            {
+                // Проверяем, что переданный sectionId действительно принадлежит учителю
+                if (teacherSectionIds.Contains(sectionId.Value))
+                {
+                    effectiveSectionId = sectionId.Value.ToString();
+                    currentSectionName = teacherSectionsList
+                                                .FirstOrDefault(s => s.SectionId == sectionId.Value)?
+                                                .Name ?? "Выбранная секция"; // Название секции, если найдено
+                }
+                else // Если sectionId передан, но не принадлежит учителю
+                {
+                    TempData["Error"] = "Выбранная секция не принадлежит текущему учителю.";
+                    // Сбрасываем ID, чтобы не фильтровать по некорректной секции, но продолжаем показывать студентов
+                    // из всех секций учителя.
+                    effectiveSectionId = "";
+                    currentSectionName = "Все доступные секции";
+                }
+            }
+            // ИЗМЕНЕНИЕ: Если у учителя нет секций вообще (после проверки sectionId.HasValue)
+            else if (!teacherSectionsList.Any())
+            {
+                currentSectionName = "Нет закрепленных секций";
+                ViewBag.Students = new List<Students>(); // Убедимся, что список студентов пуст
+                ViewBag.UserRole = "Teacher";
+                ViewBag.SectionName = currentSectionName;
+                ViewBag.UserId = userId;
+                ViewBag.TeacherSections = teacherSectionsList;
+                ViewBag.SearchSurname = searchSurname;
+                ViewBag.SelectedSectionId = effectiveSectionId;
+                return View(); // Ранний выход, если нет секций
+            }
+
+
+            // ИЗМЕНЕНИЕ: Запрос для получения студентов через StudentsSections
             IQueryable<Students> studentsQuery = _context_Teachers.StudentsSections
                                                 .Include(ss => ss.Student) // Загружаем связанные объекты Student
                                                 .Where(ss => teacherSectionIds.Contains(ss.SectionId)) // Фильтруем по секциям, которые ведет учитель
                                                 .Select(ss => ss.Student); // Выбираем только объекты Student
 
-            string currentSectionName = "Все доступные секции";
-
-            if (sectionId.HasValue && teacherSectionIds.Contains(sectionId.Value))
+            // ИЗМЕНЕНИЕ: Применяем фильтр по конкретной секции, если effectiveSectionId не пуст
+            if (!string.IsNullOrEmpty(effectiveSectionId))
             {
-                // Если выбрана конкретная секция, дополнительно фильтруем студентов по этой секции
-                // Student.StudentsSections.Any() используется для проверки, что студент привязан к этой секции
-                studentsQuery = studentsQuery.Where(s => s.StudentsSections.Any(ss => ss.SectionId == sectionId.Value)); // <--- ИМЯ НАВИГАЦИОННОГО СВОЙСТВА ИЗМЕНЕНО
-                currentSectionName = teacher.TeacherSections
-                                            .FirstOrDefault(ts => ts.SectionId == sectionId.Value)?
-                                            .Section?.Name ?? "Выбранная секция";
+                int filterSectionId = int.Parse(effectiveSectionId); // Парсим ID для фильтрации
+                studentsQuery = studentsQuery.Where(s => s.StudentsSections.Any(ss => ss.SectionId == filterSectionId));
             }
 
-            var students = await studentsQuery.Distinct().ToListAsync(); // .Distinct() чтобы избежать дубликатов
+            // ИЗМЕНЕНИЕ: Применяем фильтр по фамилии, если searchSurname не пуст
+            if (!string.IsNullOrEmpty(searchSurname))
+            {
+                studentsQuery = studentsQuery.Where(s => s.Surname.Contains(searchSurname));
+            }
+
+            var students = await studentsQuery.Distinct().ToListAsync();
 
             ViewBag.UserRole = "Teacher";
             ViewBag.SectionName = currentSectionName;
             ViewBag.UserId = userId;
             ViewBag.Students = students;
-            ViewBag.TeacherSections = teacher.TeacherSections.Select(ts => ts.Section).ToList();
+            ViewBag.TeacherSections = teacherSectionsList; // Передаем список секций преподавателя
+            ViewBag.SearchSurname = searchSurname; // Передаем фамилию для поиска обратно в View
+            ViewBag.SelectedSectionId = effectiveSectionId; // Передаем актуальный selectedSectionId в View (для Razor)
 
             return View();
         }
