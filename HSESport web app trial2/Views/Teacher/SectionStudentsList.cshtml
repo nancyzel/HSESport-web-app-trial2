@@ -24,7 +24,8 @@
             <th>Отчество</th>
             <th>Email</th>
             <th>Посещения</th>
-            <th>Действия</th>
+            <th>Добавить</th>
+            <th>Удаление</th>
         </tr>
     </thead>
     <tbody>
@@ -41,6 +42,13 @@
                         <input type="hidden" name="userId" value="@ViewBag.UserId" />
                         <input type="hidden" name="studentId" value="@student.StudentId" />
                         <button type="submit" class="btn btn-success">Добавить посещение</button>
+                    </form>
+                </td>
+                <td>
+                    <form asp-controller="Teacher" asp-action="DeleteAttendance" method="post">
+                        <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                        <input type="hidden" name="studentId" value="@student.StudentId" />
+                        <button type="submit" class="btn btn-danger">Удалить посещение</button>
                     </form>
                 </td>
             </tr>

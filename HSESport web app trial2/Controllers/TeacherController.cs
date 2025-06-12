@@ -81,15 +81,6 @@ namespace HSESport_web_app_trial2.Controllers
             if (student == null)
                 return NotFound();
 
-            // Проверяем, нет ли уже посещения для этого студента в этой секции сегодня
-            //var existingAttendance = await _context_Teachers.AttendanceDates
-            //    .AnyAsync(a => a.StudentId == studentId && a.SectionId == teacher.SportSectionId && a.Date == DateOnly.FromDateTime(DateTime.Now));
-            //if (existingAttendance)
-            //{
-            //    TempData["Error"] = "Студент уже отмечен как посетивший секцию сегодня.";
-            //    return RedirectToAction(nameof(SectionStudentsList), new { userId });
-            //}
-
             // Создаём запись в AttendanceDates
             var attendance = new AttendanceDates
             {
@@ -107,7 +98,44 @@ namespace HSESport_web_app_trial2.Controllers
             await _context_Teachers.SaveChangesAsync();
             await _context_Students.SaveChangesAsync();
 
-            TempData["Success"] = "Посещение успешно добавлено!";
+            TempData["Success"] = $"cтуденту {student.Name} {student.Surname} добавлено посещение: {student.AttendanceRate-1} + 1 = {student.AttendanceRate}";
+            return RedirectToAction(nameof(SectionStudentsList), new { userId });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteAttendance(int userId, int studentId)
+        {
+            var teacher = await _context_Teachers.Teachers
+                .FirstOrDefaultAsync(t => t.TeacherId == userId);
+
+            if (teacher == null)
+                return NotFound();
+
+            var student = await _context_Students.Students
+                .FirstOrDefaultAsync(s => s.StudentId == studentId);
+
+            if (student == null)
+                return NotFound();
+
+            // Создаём запись в AttendanceDates
+            var attendance = new AttendanceDates
+            {
+                StudentId = studentId,
+                SectionId = teacher.SportSectionId,
+                Date = DateOnly.FromDateTime(DateTime.Now)
+            };
+            _context_Teachers.AttendanceDates.Add(attendance);
+
+            // Увеличиваем AttendanceRate студента
+            student.AttendanceRate--;
+            _context_Students.Update(student);
+
+            // Сохраняем изменения
+            await _context_Teachers.SaveChangesAsync();
+            await _context_Students.SaveChangesAsync();
+
+            TempData["Success"] = $"cтуденту {student.Name} {student.Surname} УДАЛЕНО посещение: {student.AttendanceRate+1} - 1 = {student.AttendanceRate} ";
             return RedirectToAction(nameof(SectionStudentsList), new { userId });
         }
 
