@@ -3,13 +3,34 @@
     ViewData["Title"] = "Список студентов секции";
     Layout = "_Layout_Teacher";
 
-    // Безопасно получаем имя текущей секции
+    // Безопасно получаем список секций преподавателя.
+    // Если ViewBag.TeacherSections пуст, создаем пустой список для предотвращения ошибок.
+    List<HSESport_web_app_trial2.Models.Sections> teacherSectionsList = ViewBag.TeacherSections as List<HSESport_web_app_trial2.Models.Sections> ?? new List<HSESport_web_app_trial2.Models.Sections>();
+
+    // Получаем ID выбранной секции из параметров запроса URL.
+    string selectedSectionId = Context.Request.Query["sectionId"].ToString();
+
+    // Имя текущей секции для заголовка. Изначально устанавливается на основе переданного sectionId
+    // или на "Все доступные секции" если sectionId пуст.
     string currentSectionName = ViewBag.SectionName?.ToString() ?? "Все доступные секции";
+
+
+    // Если sectionId не передан в URL (первая загрузка или сброс),
+    // и у учителя есть хотя бы одна секция, выбираем первую секцию по умолчанию.
+    if (string.IsNullOrEmpty(selectedSectionId) && teacherSectionsList.Any())
+    {
+        var defaultSection = teacherSectionsList.First();
+        selectedSectionId = defaultSection.SectionId.ToString();
+        currentSectionName = defaultSection.Name; // Обновляем имя текущей секции для заголовка.
+
+        // Важно: перенаправляем, чтобы URL обновился с ID выбранной по умолчанию секции.
+        // Это гарантирует, что контроллер также получит этот ID для фильтрации студентов.
+        Context.Response.Redirect(Url.Action("SectionStudentsList", "Teacher", new { userId = ViewBag.UserId, sectionId = selectedSectionId }));
+    }
 }
 
-<h1>@currentSectionName</h1>
+<h1>@currentSectionName</h1> @* Отображаем имя текущей или всех секций *@
 
-<!-- Сообщения об успехе или ошибке -->
 @if (TempData["Success"] != null)
 {
     <div class="alert alert-success">@TempData["Success"]</div>
@@ -19,22 +40,33 @@
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
 
-<!-- Форма для выбора секции -->
 <form asp-controller="Teacher" asp-action="SectionStudentsList" method="get">
     <input type="hidden" name="userId" value="@ViewBag.UserId" />
     <label for="sectionSelector">Выберите секцию:</label>
-    <select name="sectionId" id="sectionSelector" onchange="this.form.submit()">
-        <option value="" selected="@(string.IsNullOrEmpty(Context.Request.Query["sectionId"].ToString()) ? "selected" : null)">Все доступные секции</option>
-        @foreach (var sec in ViewBag.TeacherSections)
+    <select name="sectionId" id="sectionSelector" onchange="this.form.submit()" class="form-select">
+        
+        @if (teacherSectionsList.Any()) // Если у учителя есть секции, перебираем их.
         {
-            <option value="@sec.SectionId" selected="@(currentSectionName == sec.Name ? "selected" : null)">
-                @sec.Name
-            </option>
+            @foreach (var sec in ViewBag.TeacherSections)
+
+            {
+
+                <option value ="@sec.SectionId"  selected="@(currentSectionName == sec.Name ? "selected" : null)">
+
+                    @sec.Name
+
+                    </option>
+
+            }
+        }
+        else // Если у учителя нет закрепленных секций, отображаем это.
+        {
+             <option value="">Нет доступных секций</option>
         }
     </select>
 </form>
 
-<table class="table table-bordered">
+<table class="table table-bordered mt-3"> @* Добавлен отступ сверху для лучшей читабельности *@
     <thead>
         <tr>
             <th>Фамилия</th>
@@ -47,30 +79,40 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var student in ViewBag.Students)
+        @* Проверяем, есть ли студенты для отображения. *@
+        @if (ViewBag.Students != null && ((List<HSESport_web_app_trial2.Models.Students>)ViewBag.Students).Any())
+        {
+            @foreach (var student in ViewBag.Students)
+            {
+                <tr>
+                    <td>@student.Surname</td>
+                    <td>@student.Name</td>
+                    <td>@student.SecondName</td>
+                    <td>@student.Email</td>
+                    <td>@student.AttendanceRate</td>
+                    <td>
+                        <form asp-controller="Teacher" asp-action="AddAttendance" method="post" class="d-inline">
+                            <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                            <input type="hidden" name="studentId" value="@student.StudentId" />
+                            <input type="hidden" name="sectionId" value="@selectedSectionId" />
+                            <button type="submit" class="btn btn-success btn-sm">Добавить посещение</button> 
+                        </form>
+                    </td>
+                    <td>
+                        <form asp-controller="Teacher" asp-action="DeleteAttendance" method="post" class="d-inline">
+                            <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                            <input type="hidden" name="studentId" value="@student.StudentId" />
+                            <input type="hidden" name="sectionId" value="@selectedSectionId" />
+                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить посещение?');">Удалить посещение</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        }
+        else
         {
             <tr>
-                <td>@student.Surname</td>
-                <td>@student.Name</td>
-                <td>@student.SecondName</td>
-                <td>@student.Email</td>
-                <td>@student.AttendanceRate</td>
-                <td>
-                    <form asp-controller="Teacher" asp-action="AddAttendance" method="post">
-                        <input type="hidden" name="userId" value="@ViewBag.UserId" />
-                        <input type="hidden" name="studentId" value="@student.StudentId" />
-                        <input type="hidden" name="sectionId" value="@(Context.Request.Query["sectionId"].FirstOrDefault() ?? "")" />
-                        <button type="submit" class="btn btn-success">Добавить посещение</button>
-                    </form>
-                </td>
-                <td>
-                    <form asp-controller="Teacher" asp-action="DeleteAttendance" method="post">
-                        <input type="hidden" name="userId" value="@ViewBag.UserId" />
-                        <input type="hidden" name="studentId" value="@student.StudentId" />
-                        <input type="hidden" name="sectionId" value="@(Context.Request.Query["sectionId"].FirstOrDefault() ?? "")" />
-                        <button type="submit" class="btn btn-danger" onclick="return confirm('Вы уверены, что хотите удалить посещение?');">Удалить посещение</button>
-                    </form>
-                </td>
+                <td colspan="7" class="text-center">Студенты не найдены в этой секции или у учителя нет закрепленных секций.</td>
             </tr>
         }
     </tbody>

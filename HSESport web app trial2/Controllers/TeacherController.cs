@@ -93,13 +93,7 @@ namespace HSESport_web_app_trial2.Controllers
                 .FirstOrDefaultAsync(t => t.TeacherId == userId);
 
             if (teacher == null) return NotFound();
-
-            if (!teacher.TeacherSections.Any(ts => ts.SectionId == sectionId))
-            {
-                TempData["Error"] = "Учитель не имеет права добавлять посещения для этой секции.";
-                return RedirectToAction(nameof(SectionStudentsList), new { userId, sectionId });
-            }
-
+            
             var student = await _context_Teachers.Students
                 .Include(s => s.StudentsSections) // <--- ИМЯ НАВИГАЦИОННОГО СВОЙСТВА ИЗМЕНЕНО
                 .FirstOrDefaultAsync(s => s.StudentId == studentId);
