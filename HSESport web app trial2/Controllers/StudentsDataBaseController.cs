@@ -11,9 +11,9 @@ namespace HSESport_web_app_trial2.Controllers
 {
     public class StudentsDataBaseController : Controller
     {
-        private readonly MyDbContextStudents _context;
+        private readonly MyDbContextTeachers _context;
 
-        public StudentsDataBaseController(MyDbContextStudents context)
+        public StudentsDataBaseController(MyDbContextTeachers context)
         {
             _context = context;
         }

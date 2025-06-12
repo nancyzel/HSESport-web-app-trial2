@@ -8,13 +8,11 @@ namespace HSESport_web_app_trial2.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly MyDbContextStudents _context_Students;
         private readonly MyDbContextTeachers _context_Teachers;
 
-        public HomeController(ILogger<HomeController> logger, MyDbContextStudents dbContextStudents, MyDbContextTeachers dbContextTeachers)
+        public HomeController(ILogger<HomeController> logger,MyDbContextTeachers dbContextTeachers)
         {
             _logger = logger;
-            _context_Students = dbContextStudents;
             _context_Teachers = dbContextTeachers;
         }
 
@@ -91,13 +89,13 @@ namespace HSESport_web_app_trial2.Controllers
 
         public async Task<int> SearchStudentByEmailAndPassword(string userEmail, string userPassword)
         {
-            if (_context_Students.Students == null)
+            if (_context_Teachers.Students == null)
             {
                 return -1;
             }
             else
             {
-                var students = await _context_Students.Students.FirstOrDefaultAsync(m => m.Email == userEmail && m.Password == userPassword);
+                var students = await _context_Teachers.Students.FirstOrDefaultAsync(m => m.Email == userEmail && m.Password == userPassword);
                 if (students == null)
                 {
                     return -1;

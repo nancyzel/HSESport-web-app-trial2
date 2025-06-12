@@ -7,9 +7,9 @@ namespace HSESport_web_app_trial2.Controllers
     public class StudentController : Controller
     {
         private readonly ILogger<StudentController> _logger;
-        private readonly MyDbContextStudents _context;
+        private readonly MyDbContextTeachers _context;
 
-        public StudentController(ILogger<StudentController> logger, MyDbContextStudents dbContext)
+        public StudentController(ILogger<StudentController> logger, MyDbContextTeachers dbContext)
         {
             _logger = logger;
             _context = dbContext;
