@@ -1,10 +1,10 @@
 import telegram
-from telegram.ext import Application, CommandHandler, ConversationHandler, MessageHandler, filters
+from telegram.ext import Application, CommandHandler, ConversationHandler, MessageHandler, filters, CallbackContext
 import pyodbc
 from contextlib import contextmanager
 from cachetools import TTLCache
 import asyncio
-from uuid import uuid4
+
 
 EMAIL, CHOICE = range(2)
 
@@ -18,11 +18,11 @@ CONNECTION_STRING = (
 
 # Пул соединений (максимум 30 соединений)
 connection_pool = []
-MAX_CONNECTIONS = 30  # Увеличено для поддержки до 30 одновременных соединений
+MAX_CONNECTIONS = 30
 connection_semaphore = asyncio.Semaphore(MAX_CONNECTIONS)
 
-# Кэш для данных о посещениях (храним 1 час)
-cache = TTLCache(maxsize=1000, ttl=10)
+# Кэш для данных о посещениях (храним 1 час) - закомментирован, но оставлен
+cache = TTLCache(maxsize=1000, ttl=10)  # TTL изменен на 10 секунд для большей актуальности в случае изменений
 
 
 @contextmanager
@@ -42,51 +42,73 @@ def get_db_connection():
             connection_pool.append(conn)
 
 
-# В файле бота, в функции get_student_attendance
 async def get_student_attendance(email):
-    # Удаляем проверку кэша, как было сделано ранее
-    # cache_key = f"attendance_{email}"
-    # if cache_key in cache:
-    #     return cache[cache_key], None
-
     async with connection_semaphore:
-        with get_db_connection() as conn:
-            if not conn:
-                return None, None, "Ошибка подключения к базе данных"
+        try:
+            with get_db_connection() as conn:
+                if not conn:
+                    return None, None, None, None, "Ошибка подключения к базе данных"
 
-            try:
-                cursor = conn.cursor()
-                # ИЗМЕНЕНИЕ: Запрашиваем Name, Surname и AttendanceRate
-                query = "SELECT Name, Surname, AttendanceRate FROM Students WHERE Email = ?"
-                cursor.execute(query, email)
-                result = cursor.fetchone()
+                try:
+                    cursor = conn.cursor()
 
-                if result:
-                    # Возвращаем имя, фамилию и количество посещений
-                    name = result[0]
-                    surname = result[1]
-                    attendance_rate = result[2]
-                    # cache[cache_key] = (name, surname, attendance_rate) # Удаляем запись в кэш
-                    return name, surname, attendance_rate, None
-                else:
-                    return None, None, None, "Студент с такой почтой не найден"
-            except pyodbc.Error as e:
-                return None, None, None, f"Ошибка запроса к базе данных: {e}"
+                    base_query = "SELECT StudentId, Name, Surname, AttendanceRate FROM Students WHERE Email = ?"
+                    cursor.execute(base_query, email)
+                    student_result = cursor.fetchone()
+
+                    if not student_result:
+                        return None, None, None, None, "Студент с такой почтой не найден"
+
+                    student_id = student_result[0]
+                    name = student_result[1]
+                    surname = student_result[2]
+                    total_attendance_rate = student_result[3]
+
+                    section_attendance_query = """
+                        SELECT
+                            SEC.Name AS SectionName,
+                            COUNT(AD.AttendanceId) AS SectionAttendanceCount
+                        FROM
+                            AttendanceDates AS AD
+                        JOIN
+                            Sections AS SEC ON AD.SectionId = SEC.SectionId
+                        WHERE
+                            AD.StudentId = ?
+                        GROUP BY
+                            SEC.Name
+                        ORDER BY
+                            SEC.Name;
+                    """
+                    cursor.execute(section_attendance_query, student_id)
+                    section_results = cursor.fetchall()
+
+                    section_attendances_list = []
+                    for row in section_results:
+                        section_attendances_list.append({'name': row[0], 'count': row[1]})
+
+                    # Возвращаем имя, фамилию, общее количество посещений, список посещений по секциям и ошибку (None)
+                    return name, surname, total_attendance_rate, section_attendances_list, None
+
+                except pyodbc.Error as e:
+                    print(f"Ошибка запроса к базе данных: {e}")
+                    return None, None, None, None, f"Ошибка запроса к базе данных: {e}"
+        except Exception as e:
+            print(f"Неожиданная ошибка в get_student_attendance: {e}")
+            return None, None, None, None, f"Неизвестная ошибка при получении данных: {e}"
 
 
-async def start(update, context):
+async def start(update: telegram.Update, context: CallbackContext) -> int:
     await update.message.reply_text(
         "Привет! Я бот для проверки посещений. Введи свою корпоративную почту."
     )
     return EMAIL
 
 
-async def handle_email(update, context):
+async def handle_email(update: telegram.Update, context: CallbackContext) -> int:
     email = update.message.text
     context.user_data['email'] = email
 
-    # ИЗМЕНЕНИЕ: Получаем имя, фамилию и количество посещений
-    name, surname, attendance, error = await get_student_attendance(email)
+    name, surname, total_attendance, section_attendances, error = await get_student_attendance(email)
 
     if error:
         await update.message.reply_text(
@@ -94,9 +116,11 @@ async def handle_email(update, context):
         )
         return EMAIL
 
+    # ИЗМЕНЕНИЕ: Сохраняем все данные в user_data
     context.user_data['name'] = name
     context.user_data['surname'] = surname
-    context.user_data['attendance'] = attendance
+    context.user_data['total_attendance'] = total_attendance
+    context.user_data['section_attendances'] = section_attendances
 
     keyboard = [
         [telegram.KeyboardButton("Посмотреть ещё раз")],
@@ -104,7 +128,6 @@ async def handle_email(update, context):
     ]
     reply_markup = telegram.ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
 
-    # ИЗМЕНЕНИЕ: Форматируем имя и фамилию, убирая лишние пробелы
     full_name_parts = []
     if name:
         full_name_parts.append(str(name).strip())
@@ -113,47 +136,53 @@ async def handle_email(update, context):
 
     display_name = " ".join(full_name_parts)
 
+    response_text = f"Студент: {display_name}\n\n"
+    response_text += f"Количество посещений общее = {total_attendance}\n"
+
+    if section_attendances:
+        response_text += "\nПосещения по секциям:\n"
+        for section in section_attendances:
+            section_name_clean = str(section['name']).strip()
+            section_count_clean = str(section['count']).strip()
+            response_text += f"- {section_name_clean}: {section_count_clean}\n"
+    else:
+        response_text += "\nПосещения по секциям не найдены."
+
     await update.message.reply_text(
-        f"Студент: {display_name}\nКоличество посещений: {attendance}\n\nЧто хочешь сделать?",
+        response_text + "\n\nЧто хочешь сделать?",
         reply_markup=reply_markup
     )
     return CHOICE
 
 
-async def handle_choice(update, context):
+async def handle_choice(update: telegram.Update, context: CallbackContext) -> int:
     choice = update.message.text
 
     if choice == "Посмотреть ещё раз":
-        # Заново получаем email из user_data
         email = context.user_data.get('email')
         if not email:
-            # Если email почему-то потерялся (что маловероятно в данном потоке),
-            # просим ввести заново
             await update.message.reply_text("Что-то пошло не так. Пожалуйста, введи свою почту заново.")
             return EMAIL
 
-        # >>> ЭТО КЛЮЧЕВОЕ ИЗМЕНЕНИЕ: СНОВА ЗАПРАШИВАЕМ ДАННЫЕ ИЗ БД <<<
-        # ИЗМЕНЕНИЕ: Получаем имя, фамилию и количество посещений
-        name, surname, attendance, error = await get_student_attendance(email)
+        name, surname, total_attendance, section_attendances, error = await get_student_attendance(email)
 
         if error:
-            # Обрабатываем возможные ошибки при повторном запросе
             await update.message.reply_text(
                 error + "\n\nВведи почту заново или напиши /cancel для завершения."
             )
             return EMAIL
 
-        # Обновляем данные в user_data
         context.user_data['name'] = name
         context.user_data['surname'] = surname
-        context.user_data['attendance'] = attendance
+        context.user_data['total_attendance'] = total_attendance
+        context.user_data['section_attendances'] = section_attendances
 
         keyboard = [
             [telegram.KeyboardButton("Посмотреть ещё раз")],
             [telegram.KeyboardButton("Ввести другую почту")]
         ]
         reply_markup = telegram.ReplyKeyboardMarkup(keyboard, one_time_keyboard=True)
-        # ИЗМЕНЕНИЕ: Форматируем имя и фамилию, убирая лишние пробелы
+
         full_name_parts = []
         if name:
             full_name_parts.append(str(name).strip())
@@ -162,8 +191,21 @@ async def handle_choice(update, context):
 
         display_name = " ".join(full_name_parts)
 
+
+        response_text = f"Студент: {display_name}\n\n"
+        response_text += f"Количество посещений общее = {total_attendance}\n"
+
+        if section_attendances:
+            response_text += "\nПосещения по секциям:\n"
+            for section in section_attendances:
+                section_name_clean = str(section['name']).strip()
+                section_count_clean = str(section['count']).strip()
+                response_text += f"- {section_name_clean}: {section_count_clean}\n"
+        else:
+            response_text += "\nПосещения по секциям не найдены."
+
         await update.message.reply_text(
-            f"Студент: {display_name}\n\nКоличество посещений: {attendance}\n\nЧто хочешь сделать?",
+            response_text + "\n\nЧто хочешь сделать?",
             reply_markup=reply_markup
         )
         return CHOICE
@@ -180,7 +222,7 @@ async def handle_choice(update, context):
         return CHOICE
 
 
-async def cancel(update, context):
+async def cancel(update: telegram.Update, context: CallbackContext) -> int:
     await update.message.reply_text(
         "Работа бота завершена. Чтобы начать заново, напиши /start.",
         reply_markup=telegram.ReplyKeyboardRemove()
@@ -190,12 +232,13 @@ async def cancel(update, context):
 
 async def shutdown():
     for conn in connection_pool:
-        conn.close()
+        try:
+            conn.close()
+        except Exception as e:
+            print(f"Ошибка при закрытии соединения из пула: {e}")
     connection_pool.clear()
 
-
 def main():
-    # Замените 'YOUR_BOT_TOKEN' на токен вашего бота
     application = Application.builder().token('8064109215:AAFVxyyABHcw8uT4gzW7c2bVT_68-R6EZ_8').build()
 
     conv_handler = ConversationHandler(
