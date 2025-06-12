@@ -11,34 +11,29 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <div class="header-logo text-center mb-4">
-                    <a class="navbar-brand" asp-controller="Home" asp-action="Index"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle; margin-right: 10px;"></a>
-                </div>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item justify-content: float-start">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="">Расписание секций</a>
-                        </li>
-                        <li class="nav-item justify-content: float-end">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="StudentAuthorization" asp-route-userRole="">Войти</a>
-                        </li>
-                    </ul>
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between">
+                <a class="navbar-brand me-3" asp-controller="Home" asp-action="Index"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle;"></a>
+
+                <ul class="navbar-nav flex-grow-1">
+                    <li class="nav-item" style="text-align: center; vertical-align: middle">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="">Расписание секций</a>
+                    </li>
+                </ul>
+
+                <div style="text-align: right; width: 100%;">
+                    <div style="display: inline-block;">
+                        <a class="nav-link text-dark ms-auto" asp-area="" asp-controller="Home" asp-action="StudentAuthorization" asp-route-userRole="">Войти</a>
+                    </div>
                 </div>
             </div>
-        </nav>
+
+        </div>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            <! style="background-color: #0056b3">
-            @RenderBody()
-        </main>
-    </div>
+
+    <main>
+           @RenderBody() 
+    </main>
 
     <footer class="border-top footer">
         <div class="container">

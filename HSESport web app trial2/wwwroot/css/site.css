@@ -18,31 +18,41 @@ html {
 }
 
 body {
-    margin-bottom: 60px;
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     color: #333;
-    line-height: 1.6;
     min-height: 100%;
 }
 
 header {
+    position: fixed !important;
+    top: 0 !important;
+    width: 100% !important;
     display: flex;
     background-color: #fff;
-    padding: 20px 0;
     text-align: center;
     font-family: Arial, sans-serif;
     font-size: 25px;
+    height: 80px;
+    align-items: center;
+    justify-content: space-between !important;
 }
+
 
 main {
     display: flex;
-    flex-direction: column;
+    flex-direction: column; /*вертикальное выравнивание*/
     align-items: center;
+    justify-content: center;
     padding: 20px;
+    margin-top: 80px !important;
+    margin-bottom: 100px !important;
 }
 
 footer {
+    position: fixed !important;
+    bottom: 0 !important;
+    width: 100% !important;
     background-color: #0056b3;
     color: white !important;
     text-align: center;
@@ -67,11 +77,26 @@ footer a {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
 }
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
+.navbar-brand img {
+    width: 110px;
+    height: 30px;
+    vertical-align: middle;
+}
+
+.navbar .navbar-nav {
+    margin-left: auto; 
+}
 .header-logo {
     display: flex;
     justify-content: center;
     align-items: center;
+    vertical-align: middle;
     margin-top: 20px;
 }
 
@@ -197,7 +222,7 @@ footer a {
 .card {
     border: none;
     border-radius: 10px;
-    weight: 100px;
+    width: 100%;
 }
 
 .card.teacher {
@@ -217,4 +242,12 @@ footer a {
 
 .card p strong {
     font-weight: bold;
+}
+.wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100% !important;
+    margin-left: 1rem;
+    margin-right: 1rem;
 }
