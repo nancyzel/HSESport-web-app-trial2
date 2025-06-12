@@ -8,26 +8,19 @@
     List<HSESport_web_app_trial2.Models.Sections> teacherSectionsList = ViewBag.TeacherSections as List<HSESport_web_app_trial2.Models.Sections> ?? new List<HSESport_web_app_trial2.Models.Sections>();
 
     // Получаем ID выбранной секции из параметров запроса URL.
-    string selectedSectionId = Context.Request.Query["sectionId"].ToString();
+    // Используем ViewBag.SelectedSectionId, который контроллер устанавливает после логики выбора по умолчанию.
+    string selectedSectionId = ViewBag.SelectedSectionId?.ToString() ?? ""; 
 
-    // Имя текущей секции для заголовка. Изначально устанавливается на основе переданного sectionId
-    // или на "Все доступные секции" если sectionId пуст.
-    string currentSectionName = ViewBag.SectionName?.ToString() ?? "Все доступные секции";
+    // Имя текущей секции для заголовка.
+    // Если ViewBag.SectionName null, используем "Нет закрепленных секций" (если у учителя их нет)
+    // или "Все доступные секции" (если учитель выбрал некорректную секцию).
+    string currentSectionName = ViewBag.SectionName?.ToString() ?? "Нет закрепленных секций"; 
 
-
-    // Если sectionId не передан в URL (первая загрузка или сброс),
-    // и у учителя есть хотя бы одна секция, выбираем первую секцию по умолчанию.
-    // Это изменение находится в контроллере для корректного перенаправления.
-    // Здесь мы просто используем значения, которые уже были установлены контроллером.
-    if (string.IsNullOrEmpty(selectedSectionId) && teacherSectionsList.Any() && ViewBag.SectionName != null && ViewBag.SectionName != "Все доступные секции")
-    {
-        // Это условие будет истинно только если контроллер уже перенаправил на дефолтную секцию.
-        // selectedSectionId и currentSectionName уже будут обновлены контроллером.
-        // Код для инициализации уже в контроллере.
-    }
-
-    // ИЗМЕНЕНИЕ: Получаем текущее значение фильтра фамилии из ViewBag
+    // Получаем текущее значение фильтра фамилии из ViewBag
     string searchSurname = ViewBag.SearchSurname?.ToString() ?? "";
+
+    // Получаем режим отображения из ViewBag (true - показывать всех студентов для добавления, false - показывать студентов текущей секции)
+    bool showAllStudentsForAdd = ViewBag.ShowAllStudentsForAdd ?? false;
 }
 
 <h1>@currentSectionName</h1> @* Отображаем имя текущей или всех секций *@
@@ -40,16 +33,29 @@
 {
     <div class="alert alert-danger">@TempData["Error"]</div>
 }
+@if (TempData["Warning"] != null)
+{
+    <div class="alert alert-warning">@TempData["Warning"]</div>
+}
+@if (TempData["Info"] != null)
+{
+    <div class="alert alert-info">@TempData["Info"]</div>
+}
 
-<!-- ИЗМЕНЕНИЕ: Единая форма для выбора секции и фильтрации по фамилии -->
+
+<!-- Единая форма для выбора секции и фильтрации по фамилии -->
 <form asp-controller="Teacher" asp-action="SectionStudentsList" method="get" class="mb-3">
     <input type="hidden" name="userId" value="@ViewBag.UserId" />
-    
+    <input type="hidden" name="showAllStudentsForAdd" value="@showAllStudentsForAdd.ToString().ToLower()" /> @* Передаем режим обратно в контроллер *@
+
     <div class="row g-2 align-items-end">
         <div class="col-md-4">
             <label for="sectionSelector" class="form-label">Выберите секцию:</label>
             <select name="sectionId" id="sectionSelector" onchange="this.form.submit()" class="form-select">
-                @if (teacherSectionsList.Any())
+                @* Удален <option> для "Все доступные секции".
+                   Теперь всегда будет выбрана одна из секций преподавателя, если они есть. *@
+                
+                @if (teacherSectionsList.Any()) // Если у учителя есть секции, перебираем их.
                 {
                     @foreach (var sec in ViewBag.TeacherSections)
 
@@ -63,7 +69,7 @@
 
                     }
                 }
-                else
+                else // Если у учителя нет закрепленных секций, отображаем это.
                 {
                      <option value="">Нет доступных секций</option>
                 }
@@ -78,22 +84,34 @@
         <div class="col-md-2">
             <button type="submit" class="btn btn-primary">Поиск</button>
         </div>
+        <div class="col-md-2">
+            @* Кнопка для переключения режима отображения студентов *@
+            @if (!showAllStudentsForAdd)
+            {
+                <a asp-action="SectionStudentsList" asp-controller="Teacher" asp-route-userId="@ViewBag.UserId" asp-route-sectionId="@selectedSectionId" asp-route-showAllStudentsForAdd="true" class="btn btn-info">Добавить нового студента на секцию</a>
+            }
+            else
+            {
+                <a asp-action="SectionStudentsList" asp-controller="Teacher" asp-route-userId="@ViewBag.UserId" asp-route-sectionId="@selectedSectionId" asp-route-showAllStudentsForAdd="false" class="btn btn-secondary">Вернуться к списку секции</a>
+            }
+        </div>
     </div>
 </form>
 
-<table class="table table-bordered mt-3">
+<table class="table table-bordered mt-3"> @* Добавлен отступ сверху для лучшей читабельности *@
     <thead>
         <tr>
             <th>Фамилия</th>
             <th>Имя</th>
             <th>Отчество</th>
             <th>Email</th>
-            <th>Посещения</th>
-            <th>Добавить</th>
-            <th>Удаление</th>
+            @* Колонка "Посещения" отображается только в обычном режиме *@
+            @if (!showAllStudentsForAdd) {<th>Посещения</th>}
+            <th>Действие</th> @* Колонка для кнопок действия *@
         </tr>
     </thead>
     <tbody>
+        @* Проверяем, есть ли студенты для отображения. *@
         @if (ViewBag.Students != null && ((List<HSESport_web_app_trial2.Models.Students>)ViewBag.Students).Any())
         {
             @foreach (var student in ViewBag.Students)
@@ -103,22 +121,36 @@
                     <td>@student.Name</td>
                     <td>@student.SecondName</td>
                     <td>@student.Email</td>
-                    <td>@student.AttendanceRate</td>
+                    @* Колонка "Посещения" отображается только в обычном режиме *@
+                    @if (!showAllStudentsForAdd) {<td>@student.AttendanceRate</td>}
                     <td>
-                        <form asp-controller="Teacher" asp-action="AddAttendance" method="post" class="d-inline">
-                            <input type="hidden" name="userId" value="@ViewBag.UserId" />
-                            <input type="hidden" name="studentId" value="@student.StudentId" />
-                            <input type="hidden" name="sectionId" value="@selectedSectionId" />
-                            <button type="submit" class="btn btn-success btn-sm">Добавить посещение</button>
-                        </form>
-                    </td>
-                    <td>
-                        <form asp-controller="Teacher" asp-action="DeleteAttendance" method="post" class="d-inline">
-                            <input type="hidden" name="userId" value="@ViewBag.UserId" />
-                            <input type="hidden" name="studentId" value="@student.StudentId" />
-                            <input type="hidden" name="sectionId" value="@selectedSectionId" />
-                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить посещение?');">Удалить посещение</button>
-                        </form>
+                        @if (!showAllStudentsForAdd)
+                        {
+                            @* Кнопки "Добавить/Удалить посещение" для студентов секции *@
+                            <form asp-controller="Teacher" asp-action="AddAttendance" method="post" class="d-inline">
+                                <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                                <input type="hidden" name="studentId" value="@student.StudentId" />
+                                <input type="hidden" name="sectionId" value="@selectedSectionId" /> @* Используем вычисленный selectedSectionId *@
+                                <button type="submit" class="btn btn-success btn-sm">Добавить посещение</button>
+                            </form>
+                            <form asp-controller="Teacher" asp-action="DeleteAttendance" method="post" class="d-inline">
+                                <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                                <input type="hidden" name="studentId" value="@student.StudentId" />
+                                <input type="hidden" name="sectionId" value="@selectedSectionId" /> @* Используем вычисленный selectedSectionId *@
+                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Вы уверены, что хотите удалить посещение?');">Удалить посещение</button>
+                            </form>
+                        }
+                        else
+                        {
+                            @* Кнопка "Добавить студента на секцию" для всех студентов *@
+                            <form asp-controller="Teacher" asp-action="AddStudentToSection" method="post">
+                                <input type="hidden" name="userId" value="@ViewBag.UserId" />
+                                <input type="hidden" name="studentId" value="@student.StudentId" />
+                                <input type="hidden" name="sectionId" value="@selectedSectionId" /> @* Целевая секция, в которую добавляем *@
+                                <input type="hidden" name="searchSurname" value="@searchSurname" /> @* Сохраняем поисковый запрос *@
+                                <button type="submit" class="btn btn-primary btn-sm">Добавить студента на секцию</button>
+                            </form>
+                        }
                     </td>
                 </tr>
             }
@@ -126,7 +158,7 @@
         else
         {
             <tr>
-                <td colspan="7" class="text-center">Студенты не найдены в этой секции или по указанной фамилии.</td>
+                <td colspan="@(showAllStudentsForAdd ? "5" : "7")" class="text-center">Студенты не найдены.</td>
             </tr>
         }
     </tbody>
