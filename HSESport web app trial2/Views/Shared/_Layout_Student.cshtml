@@ -11,42 +11,34 @@
 </head>
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <div class="header-logo text-center mb-4">
-                    <a class="navbar-brand" asp-controller="Student" asp-action="StudentPersonalAccount" asp-route-userId="@ViewBag.UserId"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle; margin-right: 10px;"></a>
-                </div>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="navbar-brand" asp-controller="Student" asp-action="StudentPersonalAccount" asp-route-userId="@ViewBag.UserId">Информация о студенте</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="@ViewBag.UserRole" asp-route-userId ="@ViewBag.UserId">Расписание секций</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="News" asp-route-userRole="@ViewBag.UserRole" asp-route-userId="@ViewBag.UserId">Новости</a>
-                        </li>
-                    </ul>
-                </div>
-                <div style="text-align: right; width: 100%;">
-                    <div style="display: inline-block;">
-                        <a asp-area="" asp-controller="Home" asp-action="Index" style="color:red">Выйти из профиля</a>
-                    </div>
+        <div class="container-fluid">
+            <div class="d-flex align-items-center justify-content-between">
+                <a class="navbar-brand me-3" asp-controller="Student" asp-action="StudentPersonalAccount" asp-route-userId="@ViewBag.UserId"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle; margin-right: 10px;"></a>
+
+                <ul class="navbar-nav flex-grow-3">
+                    <li class="nav-item me-2" style="text-align: center; vertical-align: middle">
+                        <a class="nav-link text-dark" asp-controller="Student" asp-action="StudentPersonalAccount" asp-route-userId="@ViewBag.UserId">Информация о студенте</a>
+                    </li>
+                    <li class="nav-item me-1" style="text-align: center; vertical-align: middle">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="@ViewBag.UserRole" asp-route-userId="@ViewBag.UserId">Расписание секций</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="News" asp-route-userRole="@ViewBag.UserRole" asp-route-userId="@ViewBag.UserId">Новости</a>
+                    </li>
+                </ul>
+
+                <div style="text-align: right;" style="text-align: center; vertical-align: middle">
+                    <a asp-area="" asp-controller="Home" asp-action="Index" style="color:red">Выйти из профиля</a>
                 </div>
             </div>
-        </nav>
+
+        </div>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            <! style="background-color: #0056b3">
-            @RenderBody()
-        </main>
-    </div>
+
+    <main role="main" class="pb-3">
+        <! style="background-color: #0056b3">
+        @RenderBody()
+    </main>
 
     <footer class="border-top footer text-muted">
         <div class="container">
