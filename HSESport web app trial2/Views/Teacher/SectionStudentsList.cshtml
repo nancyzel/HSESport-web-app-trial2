@@ -47,13 +47,13 @@
 <form asp-controller="Teacher" asp-action="SectionStudentsList" method="get" class="mb-3">
     <input type="hidden" name="userId" value="@ViewBag.UserId" />
     <input type="hidden" name="showAllStudentsForAdd" value="@showAllStudentsForAdd.ToString().ToLower()" /> @* Передаем режим обратно в контроллер *@
-
-    <div class="row g-2 align-items-end">
+    
+    <div class="wrapper">
         <div class="col-md-4">
             <label for="sectionSelector" class="form-label">Выберите секцию:</label>
             <select name="sectionId" id="sectionSelector" onchange="this.form.submit()" class="form-select">
                 @* Удален <option> для "Все доступные секции".
-                   Теперь всегда будет выбрана одна из секций преподавателя, если они есть. *@
+                    Теперь всегда будет выбрана одна из секций преподавателя, если они есть. *@
                 
                 @if (teacherSectionsList.Any()) // Если у учителя есть секции, перебираем их.
                 {
@@ -71,7 +71,7 @@
                 }
                 else // Если у учителя нет закрепленных секций, отображаем это.
                 {
-                     <option value="">Нет доступных секций</option>
+                        <option value="">Нет доступных секций</option>
                 }
             </select>
         </div>
@@ -81,14 +81,14 @@
             <input type="text" name="searchSurname" id="searchSurname" class="form-control" value="@searchSurname" placeholder="Введите фамилию" />
         </div>
         
-        <div class="col-md-2">
+        <div class="col-md-2" style="align-items: center; bottom:auto">
             <button type="submit" class="btn btn-primary">Поиск</button>
         </div>
-        <div class="col-md-2">
+        <div class="col-md-4">
             @* Кнопка для переключения режима отображения студентов *@
             @if (!showAllStudentsForAdd)
             {
-                <a asp-action="SectionStudentsList" asp-controller="Teacher" asp-route-userId="@ViewBag.UserId" asp-route-sectionId="@selectedSectionId" asp-route-showAllStudentsForAdd="true" class="btn btn-info">Добавить нового студента на секцию</a>
+                <a asp-action="SectionStudentsList" asp-controller="Teacher" asp-route-userId="@ViewBag.UserId" asp-route-sectionId="@selectedSectionId" asp-route-showAllStudentsForAdd="true" class="btn btn-primary" style="width: 200px">Добавить нового студента на секцию</a>
             }
             else
             {
@@ -96,6 +96,7 @@
             }
         </div>
     </div>
+    
 </form>
 
 <table class="table table-bordered mt-3"> @* Добавлен отступ сверху для лучшей читабельности *@
