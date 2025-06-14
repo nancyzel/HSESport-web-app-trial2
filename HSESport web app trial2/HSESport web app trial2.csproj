@@ -25,12 +25,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="App_Data\HSESport.mdf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="App_Data\HSESport_log.ldf">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="App_Data\TeachersDataBase.mdf">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
