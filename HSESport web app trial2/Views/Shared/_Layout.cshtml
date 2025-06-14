@@ -12,22 +12,21 @@
 <body>
     <header>
         <div class="container-fluid">
-            <div class="d-flex align-items-center justify-content-between">
-                <a class="navbar-brand me-3" asp-controller="Home" asp-action="Index"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo" style="width: 110px; height: 30px; vertical-align: middle;"></a>
+            <div class="header-logo">
+                <a class="header-logo img" asp-controller="Home" asp-action="Index"><img src="/images/hse-sport-logo.png" alt="HSE Sport Logo"></a>
 
                 <ul class="navbar-nav flex-grow-1">
-                    <li class="nav-item" style="text-align: center; vertical-align: middle; white-space: nowrap">
+                    <li class="nav-item menu">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Schedule" asp-route-userRole="">Расписание секций</a>
                     </li>
                 </ul>
 
-                <div style="text-align: right; width: 100%;">
+                <div class="right-container">
                     <div style="display: inline-block;">
                         <a class="nav-link text-dark ms-auto" asp-area="" asp-controller="Home" asp-action="StudentAuthorization" asp-route-userRole="">Войти</a>
                     </div>
                 </div>
             </div>
-
         </div>
     </header>
 

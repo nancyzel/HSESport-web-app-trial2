@@ -94,10 +94,9 @@ footer a {
 }
 .header-logo {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
     vertical-align: middle;
-    margin-top: 20px;
 }
 
 .header-logo img {
@@ -236,10 +235,6 @@ footer a {
     font-weight: bold;
 }
 
-.card ul {
-    padding-left: 20px;
-}
-
 .card p strong {
     font-weight: bold;
 }
@@ -250,4 +245,16 @@ footer a {
     width: 100% !important;
     margin-left: 1rem;
     margin-right: 1rem;
+}
+
+.right-container{
+    text-align: right;
+    width: 100%;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+.menu {
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
 }
