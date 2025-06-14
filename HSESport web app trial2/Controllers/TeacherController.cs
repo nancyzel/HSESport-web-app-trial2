@@ -250,7 +250,7 @@ namespace HSESport_web_app_trial2.Controllers
                     .ThenInclude(ts => ts.Section) // Включаем, чтобы получить имя секции для сообщения
                 .FirstOrDefaultAsync(t => t.TeacherId == userId);
 
-            if (teacher == null || !teacher.TeacherSections.Any(ts => ts.SectionId == sectionId))
+            if (teacher == null || !teacher.TeacherSections.Any(ts => ts.SectionId == sectionId))//проверочка
             {
                 TempData["Error"] = "Учитель не имеет права добавлять студентов в эту секцию или учитель не найден.";
                 return RedirectToAction(nameof(SectionStudentsList), new { userId, sectionId, showAllStudentsForAdd = true, searchSurname });
