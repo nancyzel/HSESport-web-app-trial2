@@ -52,8 +52,6 @@
         <div class="col-md-4">
             <label for="sectionSelector" class="form-label">Выберите секцию:</label>
             <select name="sectionId" id="sectionSelector" onchange="this.form.submit()" class="form-select">
-                @* Удален <option> для "Все доступные секции".
-                    Теперь всегда будет выбрана одна из секций преподавателя, если они есть. *@
                 
                 @if (teacherSectionsList.Any()) // Если у учителя есть секции, перебираем их.
                 {
