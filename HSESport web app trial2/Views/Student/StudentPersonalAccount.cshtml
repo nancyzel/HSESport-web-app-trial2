@@ -1,41 +1,57 @@
-﻿@{
+﻿@model HSESport_web_app_trial2.Models.Students
+@{
     ViewData["Title"] = "Информация о студенте";
     Layout = "_Layout_Student";
-
 }
+
 <h1>@ViewData["Title"]</h1>
 
-<div class="wrapper" style="justify-content: space-between;">
-    <div class="col-md-4">
-        <div class="card p-3 shadow-sm bg-light rounded">
-            <div class="d-flex align-items-center mb-2">
-                    <p><strong>Фамилия:</strong> @ViewBag.StudentSurname</p>
-                    <p><strong>Имя:</strong> @ViewBag.StudentName</p>
-                    <p><strong>Отчество:</strong> @ViewBag.StudentSecondName</p>
+@* --- Сообщения из TempData --- *@
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+@if (TempData["Warning"] != null)
+{
+    <div class="alert alert-warning">@TempData["Warning"]</div>
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card student p-3 shadow-sm bg-light rounded">
+            <div class="d-flex flex-column align-items-start">
+                <p><strong>Фамилия:</strong> @ViewBag.StudentSurname</p>
+                <p><strong>Имя:</strong> @ViewBag.StudentName</p>
+                <p><strong>Отчество:</strong> @ViewBag.StudentSecondName</p>
+                <p><strong>Email:</strong> @ViewBag.StudentEmail</p>
+
+                @* --- Форма для изменения логина (Email) и пароля --- *@
+                <h4 class="mt-4">Изменить логин и пароль</h4>
+                <form asp-controller="Student" asp-action="UpdateStudentCredentials" method="post" class="w-100">
+                    <input type="hidden" name="userId" value="@ViewBag.UserId" />
+
+                    <div class="mb-3">
+                        <label for="newEmail" class="form-label">Новый Email (логин):</label>
+                        <input type="email" class="form-control" id="newEmail" name="newEmail" value="@ViewBag.StudentEmail" />
+                    </div>
+                    <div class="mb-3">
+                        <label for="newPassword" class="form-label">Новый пароль:</label>
+                        <input type="password" class="form-control" id="newPassword" name="newPassword" placeholder="Оставьте пустым, чтобы не менять" />
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-2">Сохранить изменения</button>
+                </form>
             </div>
-            <a href="#" class="btn btn-primary w-100 mb-2">Редактировать</a>
-            <p class="mb-0"><strong>Email:</strong> @ViewBag.StudentEmail</p>
         </div>
     </div>
-    <div class="col-md-8" style="align-items: flex-start">
-        <div class="card p-3 shadow-sm bg-light rounded">
-            <div class="mt-4">
-                <p class="mb-0"><strong>Общее количество посещений: </strong>@ViewBag.StudentAttendanceRate</p>
-                <p><strong>Посещаемые секции:</strong></p>
-                @if (ViewBag.SectionNames != null && ((List<string>)ViewBag.SectionNames).Any())
-                {
-                    <ul>
-                        @foreach (var sectionName in ViewBag.SectionNames)
-                        {
-                            <li>@sectionName</li>
-                        }
-                    </ul>
-                }
-                else
-                {
-                    <p>У студента нет закрепленных секций.</p>
-                }
-            </div>
+
+    <div class="col-md-4">
+        <div class="card student p-3 shadow-sm bg-light rounded">
+            <p><strong>Общее количество посещений:</strong> @ViewBag.StudentAttendanceRate</p>
+
         </div>
     </div>
 </div>
