@@ -133,7 +133,7 @@ namespace HSESport_web_app_trial2.Controllers
                 studentsQuery = studentsQuery.Where(s => s.Surname.Contains(searchSurname));
             }
 
-            var students = await studentsQuery.Distinct().ToListAsync();
+            var students = await studentsQuery.Distinct().OrderByDescending(s => s.AttendanceRate).ToListAsync();
 
             ViewBag.UserRole = "Teacher";
             ViewBag.SectionName = currentSectionName;
