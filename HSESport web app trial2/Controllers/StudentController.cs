@@ -22,6 +22,8 @@ namespace HSESport_web_app_trial2.Controllers
         public async Task<IActionResult> StudentPersonalAccount(int userId)
         {
             var student = await _context.Students
+                .Include(s => s.StudentsSections)
+                .ThenInclude(ss => ss.Section)
                 .FirstOrDefaultAsync(s => s.StudentId == userId);
 
             if (student == null)
@@ -34,6 +36,8 @@ namespace HSESport_web_app_trial2.Controllers
             ViewBag.StudentSecondName = student.SecondName;
             ViewBag.StudentEmail = student.Email;
             ViewBag.StudentAttendanceRate = student.AttendanceRate;
+
+            ViewBag.AttendedSectionNames = student.StudentsSections.Select(ss => ss.Section.Name).ToList();
 
             return View(student);
         }

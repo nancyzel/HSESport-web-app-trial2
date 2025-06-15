@@ -52,6 +52,20 @@
         <div class="card student p-3 shadow-sm bg-light rounded">
             <p><strong>Общее количество посещений:</strong> @ViewBag.StudentAttendanceRate</p>
 
+            <h5 class="mt-4">Посещаемые секции:</h5>
+            @if (ViewBag.AttendedSectionNames != null && ((List<string>)ViewBag.AttendedSectionNames).Any())
+            {
+                <ul>
+                    @foreach (var sectionName in ViewBag.AttendedSectionNames)
+                    {
+                        <li>@sectionName</li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <p>Студент пока не посещает закрепленные секции.</p>
+            }
         </div>
     </div>
 </div>
