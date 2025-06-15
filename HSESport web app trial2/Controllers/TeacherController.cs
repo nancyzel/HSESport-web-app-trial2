@@ -220,7 +220,7 @@ namespace HSESport_web_app_trial2.Controllers
             }
             else
             {
-                TempData["Error"] = $"Запись о посещении для секции {sectionId} и студента {student.Name} {student.Surname} за сегодня не найдена. Количество посещений будет уменьшено.";
+                TempData["Error"] = $"Запись о посещении для текущей секции и студента {student.Name} {student.Surname} за сегодня не найдена. Количество посещений будет уменьшено.";
             }
 
             student.AttendanceRate--;
