@@ -53,18 +53,18 @@
             <p><strong>Общее количество посещений:</strong> @ViewBag.StudentAttendanceRate</p>
 
             <h5 class="mt-4">Посещаемые секции:</h5>
-            @if (ViewBag.AttendedSectionNames != null && ((List<string>)ViewBag.AttendedSectionNames).Any())
+            @if (ViewBag.AttendedSectionDetails is IEnumerable<dynamic> sectionDetails && sectionDetails.Any())
             {
                 <ul>
-                    @foreach (var sectionName in ViewBag.AttendedSectionNames)
+                    @foreach (var sectionDetail in sectionDetails)
                     {
-                        <li>@sectionName</li>
+                        <li>@sectionDetail.SectionName: @sectionDetail.AttendanceCount</li>
                     }
                 </ul>
             }
             else
             {
-                <p>Студент пока не посещает закрепленные секции.</p>
+                <p>Студент пока не посещал секции (нет записей о посещениях).</p>
             }
         </div>
     </div>

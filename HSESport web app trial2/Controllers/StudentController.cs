@@ -1,16 +1,17 @@
 ﻿using HSESport_web_app_trial2.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Linq; 
-using System; 
-using Microsoft.Extensions.Logging; 
+using System.Linq; // Убедитесь, что этот using есть
+using System; // Для Exception
+using Microsoft.Extensions.Logging; // Для ILogger
+using System.Collections.Generic; // Для List
 
 namespace HSESport_web_app_trial2.Controllers
 {
     public class StudentController : Controller
     {
         private readonly ILogger<StudentController> _logger;
-        private readonly MyDbContextTeachers _context; 
+        private readonly MyDbContextTeachers _context; // Используем тот же контекст для всех таблиц
 
         public StudentController(ILogger<StudentController> logger, MyDbContextTeachers dbContext)
         {
@@ -22,8 +23,6 @@ namespace HSESport_web_app_trial2.Controllers
         public async Task<IActionResult> StudentPersonalAccount(int userId)
         {
             var student = await _context.Students
-                .Include(s => s.StudentsSections)
-                .ThenInclude(ss => ss.Section)
                 .FirstOrDefaultAsync(s => s.StudentId == userId);
 
             if (student == null)
@@ -37,7 +36,26 @@ namespace HSESport_web_app_trial2.Controllers
             ViewBag.StudentEmail = student.Email;
             ViewBag.StudentAttendanceRate = student.AttendanceRate;
 
-            ViewBag.AttendedSectionNames = student.StudentsSections.Select(ss => ss.Section.Name).ToList();
+            var sectionAttendanceDetails = await _context.AttendanceDates
+                .Where(ad => ad.StudentId == userId) 
+                .GroupBy(ad => ad.SectionId) 
+                .Select(g => new 
+                {
+                    SectionId = g.Key,
+                    AttendanceCount = g.Count()
+                })
+                .Join(_context.Sections, 
+                      sectionGroup => sectionGroup.SectionId, 
+                      section => section.SectionId,        
+                      (sectionGroup, section) => new          
+                      {
+                          SectionName = section.Name,         
+                          AttendanceCount = sectionGroup.AttendanceCount
+                      })
+                .OrderBy(s => s.SectionName) 
+                .ToListAsync();
+
+            ViewBag.AttendedSectionDetails = sectionAttendanceDetails;
 
             return View(student);
         }
